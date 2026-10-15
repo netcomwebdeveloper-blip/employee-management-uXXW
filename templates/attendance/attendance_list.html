@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% block page_title %}Workforce Attendance Records{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header" style="justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+    <div>
+      <h3>Attendance Logs ({{ total_count }})</h3>
+      <small style="color: var(--gray-600);">Realtime duty punch & biometric hardware logs.</small>
+    </div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <button type="button" onclick="document.getElementById('officialDutyModal').classList.add('active')" class="btn btn-success btn-sm">🏢 Mark Official Duty (Present)</button>
+      <a href="#manualSection" class="btn btn-outline btn-sm">✏️ Manual Entry</a>
+      <a href="#devicesSection" class="btn btn-primary btn-sm">🔌 Biometric Hardware</a>
+    </div>
+  </div>
+
+  <div class="panel-body" style="padding-bottom: 0;">
+    <form method="GET" style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+      <input type="date" name="date" value="{{ date_filter }}" class="form-input" style="flex: 1; min-width: 160px;">
+      <input type="text" name="employee_code" value="{{ employee_code }}" placeholder="Filter by Employee Code..." class="form-input" style="flex: 2; min-width: 200px;">
+      <button type="submit" class="btn btn-primary">Filter</button>
+      {% if date_filter or employee_code %}
+      <a href="{% url 'attendance:list' %}" class="btn btn-outline">Reset</a>
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- Scroll Container for Attendance (10 records initially) -->
+  <div class="scroll-container-10">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Employee</th>
+          <th>Department</th>
+          <th>Date</th>
+          <th>Punch In</th>
+          <th>Punch Out</th>
+          <th>Photos</th>
+          <th>Location / GPS</th>
+          <th>Duration</th>
+          <th>Source</th>
+          <th>Attendance Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in attendances %}
+        <tr>
+          <td>
+            <b>{{ a.employee.employee_code }}</b><br/>
+            <small>{{ a.employee.display_name }}</small>
+          </td>
+          <td>{{ a.employee.department.name|default:"-" }}</td>
+          <td>{{ a.date|date:"Y-m-d (D)" }}</td>
+          <td>
+            {% if a.in_time %}
+            <span style="color: var(--success); font-weight: 600;">{{ a.in_time|time:"H:i:s" }}</span>
+            {% elif a.status == 'Missed Punch-In' %}
+            <span style="color: #dc2626; font-weight: 700;">Missing</span>
+            {% else %}
+            <small style="color: var(--gray-600);">-</small>
+            {% endif %}
+          </td>
+          <td>
+            {% if a.out_time %}
+            <span style="color: var(--danger); font-weight: 600;">{{ a.out_time|time:"H:i:s" }}</span>
+            {% elif a.in_time %}
+            <span style="color: #dc2626; font-weight: 700; background: #fee2e2; padding: 2px 8px; border-radius: 4px; border: 1px solid #ef4444;" title="Punch-out missing. Contact HR for manual update.">Missing</span>
+            {% else %}
+            <small style="color: var(--gray-600);">-</small>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display: flex; gap: 4px; align-items: center;">
+              {% if a.in_photo %}
+              <a href="{{ a.in_photo.url }}" target="_blank" title="Punch In Photo">
+                <img src="{{ a.in_photo.url }}" alt="In" style="width: 32px; height: 32px; object-fit: cover; border-radius: 4px; border: 1px solid var(--gray-300);">
+              </a>
+              {% endif %}
+              {% if a.out_photo %}
+              <a href="{{ a.out_photo.url }}" target="_blank" title="Punch Out Photo">
+                <img src="{{ a.out_photo.url }}" alt="Out" style="width: 32px; height: 32px; object-fit: cover; border-radius: 4px; border: 1px solid var(--gray-300);">
+              </a>
+              {% endif %}
+              {% if not a.in_photo and not a.out_photo %}
+              <small style="color: var(--gray-600);">-</small>
+              {% endif %}
+            </div>
+          </td>
+          <td>
+            {% if a.in_latitude and a.in_longitude %}
+            <a href="https://www.google.com/maps?q={{ a.in_latitude }},{{ a.in_longitude }}" target="_blank" style="text-decoration: none; font-size: 12px; color: var(--primary);">
+              📍 {{ a.in_latitude|floatformat:4 }}, {{ a.in_longitude|floatformat:4 }}
+            </a>
+            {% elif a.in_location %}
+            <small>{{ a.in_location }}</small>
+            {% else %}
+            <small style="color: var(--gray-600);">-</small>
+            {% endif %}
+          </td>
+          <td>
+            {% if a.is_missing_punch_out %}
+            <span class="badge badge-danger" style="background:#fee2e2; color:#dc2626; font-weight:600; font-size:11px;">Incomplete</span>
+            {% else %}
+            <span class="badge badge-primary">{{ a.total_work_time }}</span>
+            {% endif %}
+          </td>
+          <td>
+            <small style="color: var(--gray-600);">{{ a.update_source }}</small>
+            {% if a.audit_logs.exists %}
+            <br/><span class="badge badge-warning" style="font-size: 9px; padding: 2px 6px;">Audited</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if a.is_official_duty or a.update_source == 'Official Office Duty' or a.leave_type == 'Official Duty' %}
+            <span class="badge badge-success" style="background:#16a34a; color:#fff; font-weight:700;">Official Duty (Present)</span>
+            {% elif a.status == 'Permission - 2 Hours' or a.is_permission %}
+            <span class="badge badge-permission">Permission – 2 Hours</span>
+            {% elif a.status == 'Half Day' %}
+            <span class="badge badge-warning">Half Day (Yellow)</span>
+            {% elif a.status == 'Present' %}
+            <span class="badge badge-success">Present (Full Day)</span>
+            {% elif a.status == 'On Leave' %}
+            <span class="badge badge-primary">Approved Leave</span>
+            {% elif a.status == 'Missed Punch-In' %}
+            <span class="badge badge-danger" style="background:#dc2626; color:#fff; font-weight:700;">🔴 Missed Punch-In</span>
+            {% elif a.status == 'Missing Punch-Out' %}
+            <span class="badge badge-danger" style="background:#dc2626; color:#fff; font-weight:700;">🔴 Missing Punch-Out</span>
+            {% else %}
+            <span class="badge badge-danger" style="background:#dc2626; color:#fff; font-weight:700;">{{ a.status }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="10" style="text-align: center; color: #94a3b8; padding: 24px;">No attendance entries recorded.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Biometric Hardware Devices Section -->
+<div class="panel" id="devicesSection">
+  <div class="panel-header" style="justify-content: space-between;">
+    <div>
+      <h3>Biometric Attendance Machine Network</h3>
+      <small style="color: var(--gray-600);">Direct TCP/IP / UDP communication protocol integration for biometric terminals (Port 4370)</small>
+    </div>
+    <button type="button" onclick="document.getElementById('addDevicePanel').style.display = document.getElementById('addDevicePanel').style.display === 'none' ? 'block' : 'none';" class="btn btn-primary btn-sm">+ Register Hardware Device</button>
+  </div>
+  <div class="panel-body">
+    <!-- Registration Form Toggle -->
+    <div id="addDevicePanel" style="display: none; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 18px;">
+      <h4 style="margin-bottom: 12px;">Add Biometric Device</h4>
+      <form method="POST" action="{% url 'attendance:device_manage' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add_device">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Device Name</label>
+            {{ device_form.name }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Device Model</label>
+            {{ device_form.device_model }}
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">IP Address / Host</label>
+            {{ device_form.ip_address }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Port</label>
+            {{ device_form.port }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Protocol</label>
+            {{ device_form.protocol }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Communication Key</label>
+          {{ device_form.communication_key }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save Biometric Terminal</button>
+      </form>
+    </div>
+
+    <!-- Registered Hardware List -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px;">
+      {% for dev in devices %}
+      <div style="border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 14px; background: #fff;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <b>{{ dev.name }}</b>
+            <span class="badge {% if dev.is_active %}badge-success{% else %}badge-gray{% endif %}" style="margin-left: 6px;">{{ dev.protocol }}</span>
+            <div style="font-size: 12px; color: var(--gray-600); margin-top: 4px;">
+              IP: <code>{{ dev.ip_address }}:{{ dev.port }}</code>
+            </div>
+            <div style="font-size: 12px; color: var(--gray-600);">Model: {{ dev.device_model }}</div>
+            <div style="font-size: 11px; color: var(--gray-600); margin-top: 4px;">
+              Status: <b>{{ dev.last_status }}</b><br/>
+              Last Synced: {{ dev.last_sync|date:"M d, Y H:i"|default:"Never" }}
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <form method="POST" action="{% url 'attendance:device_manage' %}">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="test_device">
+              <input type="hidden" name="device_id" value="{{ dev.id }}">
+              <button type="submit" class="btn btn-outline btn-sm" style="width: 100%;">🔌 Test Link</button>
+            </form>
+            <form method="POST" action="{% url 'attendance:device_manage' %}">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="sync_device">
+              <input type="hidden" name="device_id" value="{{ dev.id }}">
+              <button type="submit" class="btn btn-success btn-sm" style="width: 100%;">🔄 Sync Logs</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div style="grid-column: 1 / -1; padding: 20px; text-align: center; color: var(--gray-600); background: var(--gray-50); border-radius: var(--radius-sm);">
+        No biometric terminals added yet. Click "+ Register Hardware Device" to connect your ZKTeco machine.
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Manual Attendance Override Section -->
+<div class="panel" id="manualSection">
+  <div class="panel-header">
+    <h3>Manual Attendance Override & Audit Entry</h3>
+  </div>
+  <div class="panel-body">
+    <form method="POST" action="{% url 'attendance:manual_update' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Employee</label>
+        {{ manual_form.employee }}
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          {{ manual_form.date }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Punch In</label>
+          {{ manual_form.in_time }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Punch Out</label>
+          {{ manual_form.out_time }}
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="form-group">
+          <label class="form-label">Attendance Status</label>
+          {{ manual_form.status }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Leave / Permission Type</label>
+          {{ manual_form.leave_type }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reason / Notes</label>
+        {{ manual_form.leave_reason }}
+      </div>
+      <div style="padding: 8px 12px; background: var(--gray-50); border-radius: var(--radius-sm); font-size: 12px; color: var(--gray-600); margin-bottom: 14px;">
+        🛡️ Records modified here are tracked in the audit trail with operator identity and IP address.
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 100%;">Record & Audit Attendance</button>
+    </form>
+  </div>
+</div>
+
+<!-- Official Office Duty Modal -->
+<div class="modal-overlay" id="officialDutyModal">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3>🏢 Mark Official Office Duty / Work Assignment</h3>
+      <button type="button" class="modal-close" onclick="document.getElementById('officialDutyModal').classList.remove('active')">&times;</button>
+    </div>
+    <form method="POST" action="{% url 'attendance:mark_official_duty' %}">
+      {% csrf_token %}
+      <div style="padding: 10px 14px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 13px; color: #166534; margin-bottom: 16px; line-height: 1.45;">
+        💡 Marking an employee on <b>Official Office Duty</b> automatically records their status as <b>Present</b> instead of Leave, restores any casual leave balance if deducted, and ensures full working credit in attendance and payroll.
+      </div>
+      <div class="form-group">
+        <label class="form-label">Employee *</label>
+        {{ manual_form.employee }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date of Official Duty / Assignment *</label>
+        <input type="date" name="date" class="form-input" required value="{{ today|date:'Y-m-d' }}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Duty Assignment Title *</label>
+        <input type="text" name="duty_title" class="form-input" required placeholder="e.g. Client Site Visit, Field Work Assignment, Official Office Duty">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Assignment Details / Notes</label>
+        <textarea name="notes" class="form-input" rows="3" placeholder="Provide operational location, client name, deliverables, or official assignment details..."></textarea>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('officialDutyModal').classList.remove('active')">Cancel</button>
+        <button type="submit" class="btn btn-success">Mark Official Duty (Present)</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+

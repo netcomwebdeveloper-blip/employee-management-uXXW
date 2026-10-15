@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block page_title %}Department & Designation Management{% endblock %}
+
+{% block content %}
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Total Departments</h4>
+      <div class="metric-value">{{ total_departments }}</div>
+    </div>
+    <div class="metric-icon-box icon-purple">🏢</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Job Designations</h4>
+      <div class="metric-value">{{ total_designations }}</div>
+    </div>
+    <div class="metric-icon-box icon-blue">💼</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Add Department Form -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Add New Department</h3>
+    </div>
+    <div class="panel-body">
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add_department">
+        <div class="form-group">
+          <label class="form-label">Department Name</label>
+          {{ dept_form.name }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Department Code</label>
+          {{ dept_form.code }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          {{ dept_form.description }}
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Create Department</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Designation Form -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Add Job Designation</h3>
+    </div>
+    <div class="panel-body">
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add_designation">
+        <div class="form-group">
+          <label class="form-label">Assigned Department</label>
+          {{ desig_form.department }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Designation Title</label>
+          {{ desig_form.title }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role Description</label>
+          {{ desig_form.description }}
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Add Designation</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Department Overview Table -->
+<div class="panel">
+  <div class="panel-header">
+    <h3>Active Department Roster</h3>
+  </div>
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Department Name</th>
+          <th>Designations</th>
+          <th>Headcount</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in departments %}
+        <tr>
+          <td><b>{{ d.code }}</b></td>
+          <td><b>{{ d.name }}</b><br/><small style="color:var(--gray-600)">{{ d.description|default:"-" }}</small></td>
+          <td>
+            <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+              {% for des in d.designations.all %}
+              <span class="badge badge-gray" style="display: inline-flex; align-items: center; gap: 4px;">
+                {{ des.title }}
+                <a href="{% url 'departments:designation_delete' des.id %}" onclick="return confirm('Remove designation {{ des.title }}?');" style="color: #ef4444; text-decoration: none;">&times;</a>
+              </span>
+              {% empty %}
+              <small style="color: var(--gray-600);">None assigned</small>
+              {% endfor %}
+            </div>
+          </td>
+          <td><span class="badge badge-primary">{{ d.employee_count }} staff</span></td>
+          <td>{{ d.created_at|date:"M d, Y" }}</td>
+          <td>
+            <div style="display: flex; gap: 6px;">
+              <a href="{% url 'departments:edit' d.id %}" class="btn btn-outline btn-sm">Edit</a>
+              <a href="{% url 'departments:delete' d.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Delete department {{ d.name }}?');">Delete</a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align: center; color: #94a3b8;">No departments created yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

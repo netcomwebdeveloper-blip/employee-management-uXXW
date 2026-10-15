@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block page_title %}Reports & Business Intelligence Hub{% endblock %}
+
+{% block content %}
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Attendance Records</h4>
+      <div class="metric-value">{{ total_records }}</div>
+    </div>
+    <div class="metric-icon-box icon-blue">⏱️</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Leave Requests</h4>
+      <div class="metric-value">{{ total_leaves }}</div>
+    </div>
+    <div class="metric-icon-box icon-purple">📅</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Payroll Vouchers</h4>
+      <div class="metric-value">{{ total_payroll }}</div>
+    </div>
+    <div class="metric-icon-box icon-green">💳</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Available Report Modules</h3>
+    </div>
+    <div class="panel-body" style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="padding: 16px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h4>Workforce Attendance Report</h4>
+          <p style="color: var(--gray-600); font-size: 13px;">Date range filter, employee filter, duration metrics, CSV download.</p>
+        </div>
+        <a href="{% url 'reports:attendance' %}" class="btn btn-primary btn-sm">Launch Report →</a>
+      </div>
+
+      <div style="padding: 16px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h4>Leave Analytics Report</h4>
+          <p style="color: var(--gray-600); font-size: 13px;">Annual leave volume, approval ratios, leave type distribution.</p>
+        </div>
+        <a href="{% url 'reports:leave' %}" class="btn btn-primary btn-sm">Launch Report →</a>
+      </div>
+
+      <div style="padding: 16px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h4>Compensation & Payroll Audit</h4>
+          <p style="color: var(--gray-600); font-size: 13px;">Annual expenditure breakdown, monthly salary disbursements.</p>
+        </div>
+        <a href="{% url 'reports:payroll' %}" class="btn btn-primary btn-sm">Launch Report →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Export & Data Portability</h3>
+    </div>
+    <div class="panel-body">
+      <p style="font-size: 14px; line-height: 1.6; color: var(--gray-700); margin-bottom: 16px;">
+        All system records can be exported in standardized CSV or printable document formats for accounting and external audit purposes.
+      </p>
+      <div style="padding: 16px; background: #eff6ff; border-radius: var(--radius-sm); font-size: 13px; color: var(--primary);">
+        <b>Tip:</b> Use the Attendance Report export button to pull direct CSV exports suitable for Microsoft Excel, Google Sheets, or custom BI dashboards.
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

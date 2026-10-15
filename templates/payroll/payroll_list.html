@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block page_title %}Payroll & Compensation Management{% endblock %}
+
+{% block content %}
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Paid Compensation</h4>
+      <div class="metric-value" style="color: var(--success);">₹{{ total_disbursed|floatformat:2 }}</div>
+    </div>
+    <div class="metric-icon-box icon-green">💵</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Pending Disbursement</h4>
+      <div class="metric-value" style="color: var(--warning);">₹{{ total_pending|floatformat:2 }}</div>
+    </div>
+    <div class="metric-icon-box icon-yellow">⏳</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h3>Payroll Ledger: {{ selected_month }}/{{ selected_year }}</h3>
+    {% if is_management %}
+    <form method="POST" action="{% url 'payroll:generate' %}" style="display: flex; gap: 8px;">
+      {% csrf_token %}
+      <input type="hidden" name="year" value="{{ selected_year }}">
+      <input type="hidden" name="month" value="{{ selected_month }}">
+      <button type="submit" class="btn btn-primary btn-sm">⚡ Process {{ selected_month }}/{{ selected_year }} Payroll</button>
+    </form>
+    {% endif %}
+  </div>
+
+  <div class="panel-body" style="padding-bottom: 0;">
+    <form method="GET" style="display: flex; gap: 12px; margin-bottom: 20px;">
+      <select name="month" class="form-select" style="max-width: 150px;">
+        {% for m in "1 2 3 4 5 6 7 8 9 10 11 12"|make_list %}
+        {% endfor %}
+        <option value="1" {% if selected_month == 1 %}selected{% endif %}>January</option>
+        <option value="2" {% if selected_month == 2 %}selected{% endif %}>February</option>
+        <option value="3" {% if selected_month == 3 %}selected{% endif %}>March</option>
+        <option value="4" {% if selected_month == 4 %}selected{% endif %}>April</option>
+        <option value="5" {% if selected_month == 5 %}selected{% endif %}>May</option>
+        <option value="6" {% if selected_month == 6 %}selected{% endif %}>June</option>
+        <option value="7" {% if selected_month == 7 %}selected{% endif %}>July</option>
+        <option value="8" {% if selected_month == 8 %}selected{% endif %}>August</option>
+        <option value="9" {% if selected_month == 9 %}selected{% endif %}>September</option>
+        <option value="10" {% if selected_month == 10 %}selected{% endif %}>October</option>
+        <option value="11" {% if selected_month == 11 %}selected{% endif %}>November</option>
+        <option value="12" {% if selected_month == 12 %}selected{% endif %}>December</option>
+      </select>
+      <input type="number" name="year" value="{{ selected_year }}" class="form-input" style="max-width: 120px;">
+      <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Staff Member</th>
+          <th>Department</th>
+          <th>Basic Salary</th>
+          <th>Allowances</th>
+          <th>Deductions</th>
+          <th>Net Payout</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in records %}
+        <tr>
+          <td>
+            <b>{{ p.employee.employee_code }}</b><br/>
+            <small>{{ p.employee.display_name }}</small>
+          </td>
+          <td>{{ p.employee.department.name|default:"-" }}</td>
+          <td>₹{{ p.basic_salary }}</td>
+          <td>+₹{{ p.allowances }}</td>
+          <td>-₹{{ p.deductions }}</td>
+          <td><b style="color: var(--primary); font-size: 15px;">₹{{ p.net_salary }}</b></td>
+          <td>
+            <span class="badge {% if p.status == 'Paid' %}badge-success{% else %}badge-warning{% endif %}">
+              {{ p.status }}
+            </span>
+          </td>
+          <td>
+            <div style="display: flex; gap: 6px;">
+              <a href="{% url 'payroll:payslip' p.id %}" class="btn btn-outline btn-sm">Slip 📄</a>
+              {% if is_management and p.status != 'Paid' %}
+              <a href="{% url 'payroll:mark_paid' p.id %}" class="btn btn-success btn-sm" onclick="return confirm('Confirm payout of ₹{{ p.net_salary }}?');">Mark Paid</a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" style="text-align: center; color: #94a3b8; padding: 24px;">No payroll records found for this period. Click 'Process Payroll' above.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

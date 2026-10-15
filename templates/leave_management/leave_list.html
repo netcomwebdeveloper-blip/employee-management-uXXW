@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% block page_title %}Leave Management Portal{% endblock %}
+
+{% block content %}
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>My Casual Leave Balance</h4>
+      <div class="metric-value" style="color: var(--primary);">{{ profile.casual_leave_balance }} Days</div>
+    </div>
+    <div class="metric-icon-box icon-purple">🏖️</div>
+  </div>
+
+  {% if is_management %}
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Pending Approvals</h4>
+      <div class="metric-value" style="color: var(--warning);">{{ pending_count }}</div>
+    </div>
+    <div class="metric-icon-box icon-yellow">⏳</div>
+  </div>
+  {% endif %}
+</div>
+
+{% if hr_notifications and is_management %}
+<div class="alert alert-info" style="margin-bottom: 22px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--primary); background: #eff6ff;">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <span style="font-size: 24px;">🔔</span>
+    <div>
+      <b style="color: #1e40af; font-size: 14.5px;">Pending Leave Notifications:</b>
+      <div style="color: #3b82f6; font-size: 13px;">{{ hr_notifications|length }} employee leave request(s) awaiting review and classification.</div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="grid-2">
+  <!-- Leave Application Form -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Submit New Leave Request</h3>
+    </div>
+    <div class="panel-body">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Leave Type</label>
+          {{ apply_form.leave_type }}
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Start Date</label>
+            {{ apply_form.from_date }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Date</label>
+            {{ apply_form.to_date }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Purpose / Explanation</label>
+          {{ apply_form.reason }}
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Request for Approval</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Leave History and Approval Queue -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>{% if is_management %}Organization Leave Requests{% else %}My Leave History{% endif %}</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            {% if is_management %}<th>Staff</th>{% endif %}
+            <th>Type</th>
+            <th>Duration</th>
+            <th>Days</th>
+            <th>Status</th>
+            {% if is_management %}<th>Actions</th>{% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for l in leaves %}
+          <tr>
+            {% if is_management %}
+            <td>
+              <b>{{ l.employee.employee_code }}</b><br/>
+              <small>{{ l.employee.display_name }}</small>
+            </td>
+            {% endif %}
+            <td><b>{{ l.leave_type }}</b></td>
+            <td>{{ l.from_date|date:"M d" }} - {{ l.to_date|date:"M d" }}</td>
+            <td><b>{{ l.total_days }}d</b></td>
+            <td>
+              <span class="badge {% if l.status == 'Approved' %}badge-success{% elif l.status == 'Pending' %}badge-warning{% elif l.status == 'Rejected' %}badge-danger{% else %}badge-gray{% endif %}">
+                {{ l.status }}
+              </span>
+              {% if l.rejection_reason %}
+              <div style="font-size: 11px; color: {% if l.status == 'Cancelled' %}#64748b{% else %}#ef4444{% endif %}; margin-top: 3px; max-width: 140px; word-break: break-word;">
+                <b>Note:</b> {{ l.rejection_reason }}
+              </div>
+              {% endif %}
+            </td>
+            {% if is_management %}
+            <td>
+              {% if l.status == 'Pending' %}
+              <button type="button" onclick="openReviewModal('{{ l.id }}', '{{ l.employee.display_name }}', '{{ l.employee.employee_code }}', '{{ l.leave_type }}', '{{ l.total_days }}', '{{ l.from_date|date:'Y-m-d' }}', '{{ l.to_date|date:'Y-m-d' }}', '{{ l.reason|escapejs }}', '{{ l.employee.casual_leave_balance }}')" class="btn btn-primary btn-sm">Review & Decide</button>
+              {% else %}
+              <small style="color: var(--gray-600);">Reviewed</small>
+              {% endif %}
+            </td>
+            {% endif %}
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 24px;">No leave requests logged.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Leave Review Modal -->
+<div class="modal-overlay" id="leaveReviewModal">
+  <div class="modal-card" style="max-width: 520px;">
+    <div class="modal-header">
+      <h3 style="font-size: 17px; margin: 0;">Review Leave Request</h3>
+      <button type="button" class="modal-close" onclick="closeReviewModal()">&times;</button>
+    </div>
+    <form method="POST" id="leaveReviewForm" action="">
+      {% csrf_token %}
+      <div class="modal-body" style="padding: 20px;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <b id="revEmpNameCode">Employee</b>
+            <span class="badge badge-primary" id="revLeaveType">Casual Leave</span>
+          </div>
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">
+            <span>Dates: <b id="revDates">2026-10-12 to 2026-10-13</b> (<span id="revDays">1</span> day(s))</span>
+          </div>
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">
+            <span>Casual Leave Balance Available: <b id="revBalance" style="color: #0284c7;">2</b> day(s)</span>
+          </div>
+          <div style="font-size: 13px; color: #334155; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1;">
+            <b>Reason:</b> <span id="revReason">N/A</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="font-weight: 600;">Action Decision</label>
+          <select name="status" id="revStatusSelect" class="form-select" onchange="onReviewStatusChange()" required>
+            <option value="Approved">Approve Request</option>
+            <option value="Rejected">Reject Request</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="classificationGroup">
+          <label class="form-label" style="font-weight: 600;">Leave Classification</label>
+          <select name="classification" id="revClassificationSelect" class="form-select">
+            <option value="Paid Casual Leave">Paid Casual Leave (Full Pay, Deducts Balance)</option>
+            <option value="Paid Sick Leave">Paid Sick Leave (Full Pay)</option>
+          </select>
+          <small style="color: var(--gray-600); display: block; margin-top: 4px;">
+            Classifying as <b>Paid Casual Leave</b> or <b>Paid Sick Leave</b> pays full salary with zero deduction.
+          </small>
+        </div>
+
+        <div class="form-group" id="rejectionGroup" style="display: none;">
+          <label class="form-label" style="font-weight: 600; color: #ef4444;">Rejection Reason (Required for Rejection)</label>
+          <textarea name="rejection_reason" id="revRejectionReason" class="form-input" rows="2" placeholder="Explain rejection reason (will be displayed in red on employee calendar)..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn btn-outline" onclick="closeReviewModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="revSubmitBtn">Confirm & Save Decision</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  function openReviewModal(id, empName, empCode, leaveType, totalDays, fromDate, toDate, reason, balance) {
+    document.getElementById('leaveReviewForm').action = '/leave/' + id + '/review/';
+    document.getElementById('revEmpNameCode').textContent = empCode + ' - ' + empName;
+    document.getElementById('revLeaveType').textContent = leaveType;
+    document.getElementById('revDates').textContent = fromDate + ' to ' + toDate;
+    document.getElementById('revDays').textContent = totalDays;
+    document.getElementById('revBalance').textContent = balance;
+    document.getElementById('revReason').textContent = reason;
+    document.getElementById('revStatusSelect').value = 'Approved';
+    document.getElementById('revClassificationSelect').value = (leaveType === 'Sick Leave') ? 'Paid Sick Leave' : 'Paid Casual Leave';
+    onReviewStatusChange();
+    document.getElementById('leaveReviewModal').classList.add('active');
+  }
+
+  function closeReviewModal() {
+    document.getElementById('leaveReviewModal').classList.remove('active');
+  }
+
+  function onReviewStatusChange() {
+    const status = document.getElementById('revStatusSelect').value;
+    const classGroup = document.getElementById('classificationGroup');
+    const rejGroup = document.getElementById('rejectionGroup');
+    const submitBtn = document.getElementById('revSubmitBtn');
+    if (status === 'Approved') {
+      classGroup.style.display = 'block';
+      rejGroup.style.display = 'none';
+      submitBtn.textContent = 'Approve Leave Request';
+      submitBtn.className = 'btn btn-success';
+    } else {
+      classGroup.style.display = 'none';
+      rejGroup.style.display = 'block';
+      submitBtn.textContent = 'Confirm Rejection';
+      submitBtn.className = 'btn btn-danger';
+    }
+  }
+</script>
+{% endblock %}

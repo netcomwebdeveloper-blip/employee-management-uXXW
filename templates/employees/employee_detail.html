@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block page_title %}Employee Dossier - {{ employee.employee_code }}{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+  <a href="{% url 'employees:list' %}" class="btn btn-outline btn-sm">← Back to Registry</a>
+  <a href="{% url 'employees:edit' employee.id %}" class="btn btn-primary btn-sm">✏️ Edit Profile</a>
+</div>
+
+<div class="grid-2">
+  <!-- Profile Summary -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Personal & Professional Dossier</h3>
+      <span class="badge {% if employee.is_active_employee %}badge-success{% else %}badge-danger{% endif %}">
+        {{ employee.is_active_employee|yesno:"Active,Inactive" }}
+      </span>
+    </div>
+    <div class="panel-body">
+      <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div class="user-avatar" style="width: 72px; height: 72px; font-size: 28px; overflow: hidden; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+          {% if employee.profile_picture %}
+          <img src="{{ employee.profile_picture.url }}" alt="{{ employee.display_name }}" style="width: 100%; height: 100%; object-fit: cover;">
+          {% else %}
+          {{ employee.user.username|make_list|first|upper }}
+          {% endif %}
+        </div>
+        <div>
+          <h2>{{ employee.display_name }}</h2>
+          <p style="color: var(--gray-600);">{{ employee.designation.title|default:"Staff" }} • {{ employee.department.name|default:"General" }}</p>
+          <span class="badge badge-primary">{{ employee.role }}</span>
+        </div>
+      </div>
+
+      <table class="data-table">
+        <tr><th>Employee Code</th><td><b>{{ employee.employee_code }}</b></td></tr>
+        <tr><th>Email</th><td>{{ employee.email|default:"-" }}</td></tr>
+        <tr><th>Phone</th><td>{{ employee.phone|default:"-" }}</td></tr>
+        <tr><th>Joining Date</th><td>{{ employee.joining_date }}</td></tr>
+        <tr><th>Basic Salary</th><td>₹{{ employee.basic_salary }}</td></tr>
+        <tr><th>Casual Leave Balance</th><td><b>{{ employee.casual_leave_balance }} Days</b></td></tr>
+        <tr><th>Address</th><td>{{ employee.address|default:"-" }}</td></tr>
+        {% if current_profile.role == 'ADMIN' or current_profile.role == 'HR' or request.user.is_superuser %}
+        <tr>
+          <th>Employee Password</th>
+          <td>
+            <span id="detailEmpPwMasked" style="font-family: monospace; font-size: 14px; letter-spacing: 2px;">••••••••</span>
+            <span id="detailEmpPwPlain" style="display: none; font-family: monospace; font-size: 14px; font-weight: 600; color: #1e40af; background: #eff6ff; padding: 2px 8px; border-radius: 4px;">{{ employee.raw_password|default:"emp12345" }}</span>
+            <button type="button" class="btn btn-outline btn-sm" style="padding: 2px 8px; font-size: 11px; margin-left: 8px;" onclick="toggleDetailPw()">👁️ Show/Hide</button>
+          </td>
+        </tr>
+        <tr>
+          <th>Submitted Document</th>
+          <td>
+            {% if employee.document %}
+            <a href="{{ employee.document.url }}" target="_blank" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 4px; color: #2563eb; border-color: #3b82f6;">
+              📄 View Submitted Document
+            </a>
+            {% else %}
+            <span style="color: #94a3b8; font-size: 12px;">No document uploaded</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endif %}
+      </table>
+      <script>
+        function toggleDetailPw() {
+          const m = document.getElementById('detailEmpPwMasked');
+          const p = document.getElementById('detailEmpPwPlain');
+          if (m.style.display === 'none') {
+            m.style.display = 'inline';
+            p.style.display = 'none';
+          } else {
+            m.style.display = 'none';
+            p.style.display = 'inline';
+          }
+        }
+      </script>
+    </div>
+  </div>
+
+  <!-- Recent Attendance History -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Recent Attendance Logs</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th><th>In</th><th>Out</th><th>Hours</th><th>Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in attendances %}
+          <tr>
+            <td>{{ a.date|date:"M d, Y" }}</td>
+            <td>{{ a.in_time|time:"H:i"|default:"-" }}</td>
+            <td>{{ a.out_time|time:"H:i"|default:"-" }}</td>
+            <td><span class="badge badge-primary">{{ a.total_work_time }}</span></td>
+            <td><small>{{ a.update_source }}</small></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align: center; color: #94a3b8;">No attendance records found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Leave Request History -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Leave History</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Type</th><th>Duration</th><th>Days</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for l in leaves %}
+          <tr>
+            <td>{{ l.leave_type }}</td>
+            <td>{{ l.from_date|date:"M d" }} - {{ l.to_date|date:"M d" }}</td>
+            <td>{{ l.total_days }}d</td>
+            <td>
+              <span class="badge {% if l.status == 'Approved' %}badge-success{% elif l.status == 'Pending' %}badge-warning{% else %}badge-danger{% endif %}">
+                {{ l.status }}
+              </span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #94a3b8;">No leave requests logged.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Payroll Disbursed History -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Payroll & Compensation Records</h3>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Month/Year</th><th>Net Pay</th><th>Status</th><th>Payslip</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in payroll_records %}
+          <tr>
+            <td>{{ p.month }}/{{ p.year }}</td>
+            <td><b>₹{{ p.net_salary }}</b></td>
+            <td><span class="badge {% if p.status == 'Paid' %}badge-success{% else %}badge-warning{% endif %}">{{ p.status }}</span></td>
+            <td><a href="{% url 'payroll:payslip' p.id %}" class="btn btn-outline btn-sm">View Slip</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; color: #94a3b8;">No payroll records generated yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

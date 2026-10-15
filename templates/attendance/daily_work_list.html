@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block page_title %}Daily Work Updates & Accomplishments{% endblock %}
+
+{% block content %}
+<div class="grid-2">
+  <!-- Submit Form with Image Upload & Off-Site Support -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Post Daily Work Report</h3>
+    </div>
+    <div class="panel-body">
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Project / Module</label>
+          {{ form.project_name }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Task Progress & Details</label>
+          {{ form.work_details }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          {{ form.status }}
+        </div>
+
+        <!-- Image Attachment with Live Preview -->
+        <div class="form-group">
+          <label class="form-label">Attach Activity Photo / Site Verification Image</label>
+          {{ form.work_image }}
+          <small style="color: var(--gray-600); display: block; margin-top: 4px;">Supports JPG, PNG, WEBP. Max file size: 5MB.</small>
+          <img id="workImagePreview" class="work-image-preview-box" alt="Activity Preview">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Submit Work Update</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Work History Feed -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Recent Task Progress Feeds</h3>
+    </div>
+    <div class="panel-body" style="padding-top: 14px;">
+      {% for w in works %}
+      <div style="padding: 16px; background: var(--gray-50); border-radius: var(--radius-sm); border-left: 4px solid var(--primary); margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <h4 style="font-size: 15px; color: var(--gray-900); margin: 0;">{{ w.project_name }}</h4>
+            <small style="color: var(--gray-600);">
+              <b>{{ w.employee.employee_code }}</b> ({{ w.employee.display_name }}) • {{ w.date|date:"M d, Y" }}
+            </small>
+            {% if w.is_offsite %}
+            <div style="margin-top: 4px;">
+              <span class="badge" style="background: #e0e7ff; color: #3730a3; font-size: 11px;">
+                📍 Off-Site Activity{% if w.location_notes %}: {{ w.location_notes }}{% endif %}
+              </span>
+            </div>
+            {% endif %}
+          </div>
+          <span class="badge {% if w.status == 'Completed' %}badge-success{% elif w.status == 'In Progress' %}badge-primary{% else %}badge-warning{% endif %}">
+            {{ w.status }}
+          </span>
+        </div>
+        <p style="font-size: 13.5px; color: var(--gray-700); line-height: 1.5; margin-top: 8px;">
+          {{ w.work_details }}
+        </p>
+
+        {% if w.work_image %}
+        <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--gray-200); display: flex; align-items: center; gap: 10px;">
+          <img src="{{ w.work_image.url }}" alt="Work Photo" class="work-thumb" onclick="openWorkImageModal('{{ w.work_image.url }}')" title="Click to view full image">
+          <span style="font-size: 12px; color: var(--gray-600);">
+            📷 Activity Verification Image attached (<a href="{{ w.work_image.url }}" target="_blank" style="color: var(--primary);">Open Original</a>)
+          </span>
+        </div>
+        {% endif %}
+      </div>
+      {% empty %}
+      <p style="text-align: center; color: #94a3b8; padding: 30px;">No daily work logs recorded yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Image Lightbox Modal -->
+<div class="modal-overlay" id="workImageModal" onclick="closeWorkImageModal()">
+  <div class="modal-card" style="max-width: 760px; background: transparent; box-shadow: none; border: none; text-align: center;" onclick="event.stopPropagation()">
+    <img id="workModalImg" src="" alt="Work Photo" style="max-width: 100%; max-height: 82vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+    <div style="margin-top: 12px;">
+      <button type="button" class="btn btn-outline" style="color: #fff; border-color: rgba(255,255,255,0.4);" onclick="closeWorkImageModal()">Close Preview</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Work image preview
+  const workImgInput = document.getElementById('workImageInput');
+  const workImgPreview = document.getElementById('workImagePreview');
+  if (workImgInput && workImgPreview) {
+    workImgInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          workImgPreview.src = e.target.result;
+          workImgPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        workImgPreview.style.display = 'none';
+      }
+    });
+  }
+
+  function openWorkImageModal(url) {
+    document.getElementById('workModalImg').src = url;
+    document.getElementById('workImageModal').classList.add('active');
+  }
+
+  function closeWorkImageModal() {
+    document.getElementById('workImageModal').classList.remove('active');
+  }
+</script>
+{% endblock %}

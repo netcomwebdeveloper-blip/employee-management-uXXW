@@ -1,0 +1,1482 @@
+{% extends 'base.html' %}
+{% block page_title %}Netcom Admin Dashboard{% endblock %}
+
+{% block content %}
+<!-- Top Punch & Attendance Summary in a Single Horizontal Line -->
+<div class="punch-horizontal-bar">
+  <div class="punch-stat-item">
+    <div class="punch-stat-icon icon-green">🟢</div>
+    <div class="punch-stat-info">
+      <span class="punch-stat-label">Punch-In Time</span>
+      <span class="punch-stat-value" style="color: var(--success);">{{ attendance.in_time|time:"H:i"|default:"--:--" }}</span>
+    </div>
+  </div>
+
+  <div class="punch-stat-item">
+    <div class="punch-stat-icon icon-yellow">🔴</div>
+    <div class="punch-stat-info">
+      <span class="punch-stat-label">Punch-Out Time</span>
+      <span class="punch-stat-value" style="color: var(--danger);">
+        {% if attendance.is_missing_punch_out %}
+          <span style="color: #ef4444; font-weight: 700;">Missing</span>
+        {% else %}
+          {{ attendance.out_time|time:"H:i"|default:"--:--" }}
+        {% endif %}
+      </span>
+    </div>
+  </div>
+
+  <div class="punch-stat-item">
+    <div class="punch-stat-icon icon-blue">⏱️</div>
+    <div class="punch-stat-info">
+      <span class="punch-stat-label">Total Working Time</span>
+      <span class="punch-stat-value">{{ attendance.total_work_time|default:"0h 0m" }}</span>
+    </div>
+  </div>
+
+  <div class="punch-stat-item">
+    <div class="punch-stat-icon icon-purple">🏖️</div>
+    <div class="punch-stat-info">
+      <span class="punch-stat-label">Casual Leave Balance</span>
+      <span class="punch-stat-value" style="color: var(--primary);">{{ profile.casual_leave_balance }} Days</span>
+    </div>
+  </div>
+</div>
+
+{% if attendance.is_missing_punch_out %}
+<!-- Prominent Red Alert Banner: Missing Punch-Out -->
+<div class="alert alert-danger" style="margin-bottom: 20px; border-left: 5px solid #ef4444; background: #fef2f2; color: #991b1b; display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-radius: 8px; box-shadow: 0 2px 6px rgba(239,68,68,0.15);">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <span style="font-size: 26px;">⚠️</span>
+    <div>
+      <div style="font-weight: 700; font-size: 15px; color: #b91c1c;">Punch-Out Missing (Incomplete Attendance Data)</div>
+      <div style="font-size: 13px; margin-top: 2px;">Your punch-in was recorded at <b>{{ attendance.in_time|time:"H:i" }}</b>, but punch-out is missing. Working hours and salary are not calculated for incomplete records. Please complete punch-out or manual override.</div>
+    </div>
+  </div>
+</div>
+{% elif attendance.is_missed_punch_in %}
+<!-- Prominent Red Alert Banner: Missed Punch-In -->
+<div class="alert alert-danger" style="margin-bottom: 20px; border-left: 5px solid #ef4444; background: #fef2f2; color: #991b1b; display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-radius: 8px; box-shadow: 0 2px 6px rgba(239,68,68,0.15);">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <span style="font-size: 26px;">⚠️</span>
+    <div>
+      <div style="font-weight: 700; font-size: 15px; color: #b91c1c;">Daily Punch-In Missed (Mandatory Attendance Cutoff Exceeded)</div>
+      <div style="font-size: 13px; margin-top: 2px;">Daily punch-in is mandatory for all personnel. Attendance status is flagged prominently in red as <b>Missed Punch-In</b> following the 12:00 PM daily cutoff.</div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Customizable Dashboard Banner Hero -->
+<div class="dashboard-banner-container">
+  {% if active_banner and active_banner.image %}
+  <img src="{{ active_banner.image.url }}" alt="{{ active_banner.title }}" class="dashboard-banner-img">
+  {% endif %}
+  <div class="dashboard-banner-overlay">
+    <div class="dashboard-banner-content">
+      <h2>{{ active_banner.title|default:"Netcom Enterprise Management Portal" }}</h2>
+    </div>
+    <div class="dashboard-banner-actions">
+      <div style="font-size: 12px; color: #94a3b8; display: flex; gap: 14px; align-items: center;">
+        <span>👤 Administrator: <b>{{ profile.display_name }}</b></span>
+        {% if active_banner.updated_at %}
+        <span>•</span>
+        <span>Banner Updated: {{ active_banner.updated_at|date:"M d, H:i" }}</span>
+        {% endif %}
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <a href="{% url 'dashboard:hr_dashboard' %}" class="btn btn-outline btn-sm" style="background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.35); backdrop-filter: blur(4px);">
+          👔 Access HR Dashboard
+        </a>
+        <button type="button" onclick="openBannerUploadModal()" class="btn btn-primary btn-sm" style="background: rgba(37,99,235,0.85); backdrop-filter: blur(4px);">
+          🎨 Manage Banner & Popup
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Metric KPI Cards -->
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Total Workforce</h4>
+      <div class="metric-value">{{ total_employees }}</div>
+    </div>
+    <div class="metric-icon-box icon-blue">👥</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Present Today</h4>
+      <div class="metric-value" style="color: var(--success);">{{ present_today }}</div>
+    </div>
+    <div class="metric-icon-box icon-green">⏱️</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>On Leave / Absent</h4>
+      <div class="metric-value" style="color: var(--danger);">{{ on_leave_today }} / {{ absent_today }}</div>
+    </div>
+    <div class="metric-icon-box icon-red">🏖️</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Pending Approvals</h4>
+      <div class="metric-value" style="color: var(--warning);">{{ pending_leaves }}</div>
+    </div>
+    <div class="metric-icon-box icon-yellow">⏳</div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-info">
+      <h4>Departments</h4>
+      <div class="metric-value">{{ total_departments }}</div>
+    </div>
+    <div class="metric-icon-box icon-purple">🏢</div>
+  </div>
+</div>
+
+<!-- Management Shortcuts & Quick Controls -->
+<div class="panel">
+  <div class="panel-header">
+    <h3>Executive Administration Shortcuts</h3>
+  </div>
+  <div class="panel-body" style="display: flex; gap: 12px; flex-wrap: wrap;">
+    <a href="{% url 'employees:create' %}" class="btn btn-primary">+ Add New Employee</a>
+    <a href="{% url 'departments:list' %}" class="btn btn-outline">🏢 Manage Departments</a>
+    <a href="{% url 'attendance:list' %}" class="btn btn-outline">⏱️ Attendance Logs</a>
+    <button type="button" onclick="openLeaveGrantModal()" class="btn btn-outline">📅 Grant / Update Leave & Permission</button>
+    <a href="{% url 'payroll:list' %}" class="btn btn-outline">💳 Process Payroll</a>
+    <a href="{% url 'reports:index' %}" class="btn btn-outline">📈 Reports Hub</a>
+    <button type="button" onclick="openManualAttendanceModal()" class="btn btn-success">✏️ Manual Attendance Entry</button>
+  </div>
+</div>
+
+<!-- Admin Attendance Calendar & Duty Punch Terminal -->
+<div class="grid-2 grid-punch-calendar">
+  <!-- Interactive Attendance Calendar for Admin (Height increased to match Punch Terminal) -->
+  <div class="panel calendar-panel">
+    <div class="panel-header" style="justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <h3>Attendance & Permission Calendar</h3>
+        <span class="badge badge-primary">{{ calendar_employee.employee_code }}</span>
+      </div>
+      <!-- Employee Picker for Calendar -->
+      <form method="GET" style="display: flex; gap: 6px; align-items: center;">
+        <select name="calendar_emp" onchange="this.form.submit()" class="form-select" style="padding: 4px 8px; font-size: 12px;">
+          {% for emp in all_calendar_users %}
+          <option value="{{ emp.id }}" {% if calendar_employee.id == emp.id %}selected{% endif %}>
+            {{ emp.employee_code }} - {{ emp.display_name }} ({{ emp.role }})
+          </option>
+          {% endfor %}
+        </select>
+        <a href="?calendar_emp={{ calendar_employee.id }}&year={{ prev_year }}&month={{ prev_month }}" class="btn btn-outline btn-sm">◀</a>
+        <span style="font-size: 13px; font-weight: 600;">{{ month_name }} {{ current_year }}</span>
+        <a href="?calendar_emp={{ calendar_employee.id }}&year={{ next_year }}&month={{ next_month }}" class="btn btn-outline btn-sm">▶</a>
+      </form>
+    </div>
+    <div class="panel-body calendar-panel-body">
+      <table class="calendar-widget">
+        <thead>
+          <tr>
+            <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for week in calendar_rows %}
+          <tr>
+            {% for day in week %}
+            <td class="{{ day.class_name }}" title="{{ day.label }}">{{ day.day }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="calendar-action-bar">
+        <button type="button" onclick="openOfficePaidLeaveModal()" class="btn btn-primary btn-sm" style="background: #059669; border-color: #047857;">
+          🏛️ Mark Paid Leave for the Office
+        </button>
+        <button type="button" onclick="openAdminOfficialDutyModal()" class="btn btn-primary btn-sm" style="background: #2563eb; border-color: #1d4ed8;">
+          🏢 Mark Official Duty (Present)
+        </button>
+        <button type="button" onclick="openLeaveGrantModal('{{ calendar_employee.id }}')" class="btn btn-outline btn-sm">
+          📅 Assign Leave / Permission
+        </button>
+        <button type="button" onclick="openManualAttendanceModal('{{ calendar_employee.id }}')" class="btn btn-outline btn-sm">
+          ✏️ Manual Override
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Administrator Duty Punch Terminal (Compact height) -->
+  <div class="panel punch-panel">
+    <div class="panel-header">
+      <h3>Administrator Duty Punch Terminal</h3>
+      <span class="badge badge-primary">Photo & GPS</span>
+    </div>
+    <div class="panel-body punch-panel-body">
+      <div class="punch-card-box">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Admin Duty Terminal</span>
+          <div class="location-badge" id="adminGpsBadge">
+            <span>📍</span> <span id="adminGpsText">Acquiring GPS...</span>
+          </div>
+        </div>
+
+        <div class="punch-timer-display" id="adminLiveClock">--:--:--</div>
+
+        <div class="camera-preview-box" style="height: 125px; margin: 6px 0 8px 0;">
+          <video id="adminCameraVideo" autoplay playsinline muted></video>
+          <div id="adminCameraFallback" style="display: none; position: absolute; color: #94a3b8; font-size: 12px; text-align: center;">
+            📷 Camera optional - timestamp verification active.
+          </div>
+        </div>
+        <canvas id="adminCameraCanvas" width="320" height="240" style="display: none;"></canvas>
+
+        <form method="POST" action="{% url 'attendance:punch' %}" id="adminPunchForm" style="display: flex; gap: 10px;">
+          {% csrf_token %}
+          <input type="hidden" name="photo_data" id="adminPhotoData" value="">
+          <input type="hidden" name="latitude" id="adminLatInput" value="">
+          <input type="hidden" name="longitude" id="adminLonInput" value="">
+          <input type="hidden" name="location" id="adminLocInput" value="">
+
+          <button type="button" onclick="executeAdminPunch('punch_in')" class="btn btn-success" style="flex: 1; padding: 9px 12px; font-size: 13px;" {% if attendance.in_time %}disabled style="opacity:0.6; cursor:not-allowed;"{% endif %}>
+            🟢 Admin Punch In
+          </button>
+          <button type="button" onclick="executeAdminPunch('punch_out')" class="btn btn-danger" style="flex: 1; padding: 9px 12px; font-size: 13px;" {% if not attendance.in_time or attendance.out_time %}disabled style="opacity:0.6; cursor:not-allowed;"{% endif %}>
+            🔴 Admin Punch Out
+          </button>
+        </form>
+
+        <div style="margin-top: 8px; font-size: 12px; opacity: 0.85;">
+          Today's Duration: <b>{{ attendance.total_work_time|default:"0h 0m" }}</b> | Status: 
+          {% if attendance.status == 'Missed Punch-In' or attendance.status == 'Missing Punch-Out' %}
+            <b style="color: #ef4444; background: #fee2e2; padding: 2px 8px; border-radius: 4px;">{{ attendance.status }}</b>
+          {% elif attendance.status == 'Official Duty' %}
+            <b style="color: #059669; background: #d1fae5; padding: 2px 8px; border-radius: 4px;">Official Duty (Present)</b>
+          {% else %}
+            <b>{{ attendance.status|default:"Not Punched" }}</b>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Attendance Machine / Biometric Integration Card -->
+<div class="panel">
+  <div class="panel-header">
+    <div>
+      <h3>Biometric Attendance Machine Network</h3>
+      <small style="color: var(--gray-600);">Realtime TCP/IP & Hardware Socket Sync (Port 4370)</small>
+    </div>
+    <button type="button" onclick="openDeviceModal()" class="btn btn-primary btn-sm">+ Add Machine</button>
+  </div>
+  <div class="panel-body">
+    {% for dev in biometric_devices %}
+    <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 12px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <b style="font-size: 14px;">{{ dev.name }}</b>
+          <span class="badge {% if dev.is_active %}badge-success{% else %}badge-gray{% endif %}" style="margin-left: 6px;">{{ dev.protocol }}</span>
+          <div style="font-size: 12px; color: var(--gray-600); margin-top: 3px;">
+            IP: <code>{{ dev.ip_address }}:{{ dev.port }}</code> | Model: {{ dev.device_model }}
+          </div>
+          <div style="font-size: 11px; color: var(--gray-600); margin-top: 2px;">
+            Status: <b>{{ dev.last_status }}</b> | Last Sync: {{ dev.last_sync|date:"M d, H:i"|default:"Never" }}
+          </div>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <form method="POST" action="{% url 'attendance:device_manage' %}" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="test_device">
+            <input type="hidden" name="device_id" value="{{ dev.id }}">
+            <button type="submit" class="btn btn-outline btn-sm">🔌 Test Link</button>
+          </form>
+          <form method="POST" action="{% url 'attendance:device_manage' %}" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="sync_device">
+            <input type="hidden" name="device_id" value="{{ dev.id }}">
+            <button type="submit" class="btn btn-success btn-sm">🔄 Sync Punches</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div style="text-align: center; padding: 24px; color: var(--gray-600); background: var(--gray-50); border-radius: var(--radius-sm);">
+      <p style="margin-bottom: 12px;">No biometric attendance machines configured yet.</p>
+      <button type="button" onclick="openDeviceModal()" class="btn btn-outline btn-sm">Configure ZKTeco Biometric Machine</button>
+    </div>
+    {% endfor %}
+
+    <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--gray-200); font-size: 12px; color: var(--gray-600);">
+      Direct TCP/IP socket probe with automated duplicate prevention and audit logging.
+    </div>
+  </div>
+</div>
+
+<!-- User Details and Leave Balance (Display only 10 records initially with scrolling) -->
+<div class="panel" id="employeeDetailsSection">
+  <div class="panel-header" style="flex-wrap: wrap; gap: 12px; justify-content: space-between;">
+    <div>
+      <h3>User Details and Leave Balance</h3>
+      <small style="color: var(--gray-600);">Search & edit all employee profiles.</small>
+    </div>
+    <!-- Search Feature by Employee ID or Employee Name and Actions -->
+    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+      <input type="text" id="employeeSearchInput" onkeyup="filterEmployeeTable()" placeholder="Search Employee ID or Name..." class="form-input" style="width: 240px; padding: 6px 12px; font-size: 13px;" value="{{ emp_search }}">
+      <a href="{% url 'employees:list' %}" class="btn btn-warning btn-sm" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+        ✏️ Edit Employee
+      </a>
+      <a href="{% url 'employees:create' %}" class="btn btn-primary btn-sm">+ Register</a>
+    </div>
+  </div>
+
+  <div class="scroll-container-10">
+    <table class="data-table" id="employeeDetailsTable">
+      <thead>
+        <tr>
+          <th>Employee ID</th>
+          <th>Employee Name</th>
+          <th>Password</th>
+          <th>Document</th>
+          <th>Department & Role</th>
+          <th>Contact</th>
+          <th>Leave Balance</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for emp in employee_details_and_leave_balance %}
+        <tr class="emp-row" data-code="{{ emp.employee_code|lower }}" data-name="{{ emp.display_name|lower }}">
+          <td>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              {% if emp.profile_picture %}
+              <img src="{{ emp.profile_picture.url }}" alt="{{ emp.display_name }}" style="width: 32px; height: 32px; object-fit: cover; border-radius: 50%; border: 1px solid #cbd5e1;">
+              {% else %}
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: #e2e8f0; color: #475569; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">
+                {{ emp.user.username|make_list|first|upper }}
+              </div>
+              {% endif %}
+              <b>{{ emp.employee_code }}</b>
+            </div>
+          </td>
+          <td>
+            <b>{{ emp.display_name }}</b><br/>
+            <small style="color: var(--gray-600);">@{{ emp.user.username }}</small>
+          </td>
+          <td>
+            <div style="display: inline-flex; align-items: center; gap: 4px;">
+              <span id="adminPwMasked_{{ emp.id }}" style="font-family: monospace; font-size: 13px; letter-spacing: 2px;">••••••••</span>
+              <span id="adminPwPlain_{{ emp.id }}" style="display: none; font-family: monospace; font-size: 12px; font-weight: 600; color: #1e40af; background: #eff6ff; padding: 2px 6px; border-radius: 4px;">{{ emp.raw_password|default:"emp12345" }}</span>
+              <button type="button" class="btn btn-outline btn-sm" style="padding: 2px 5px; font-size: 11px;" onclick="toggleAdminPw('{{ emp.id }}')" title="Show / Hide Password">👁️</button>
+            </div>
+          </td>
+          <td>
+            {% if emp.document %}
+            <a href="{{ emp.document.url }}" target="_blank" class="btn btn-outline btn-sm" style="padding: 2px 6px; font-size: 11.5px; color: #2563eb; border-color: #3b82f6;" title="View Submitted Document">
+              📄 View Doc
+            </a>
+            {% else %}
+            <span style="color: #94a3b8; font-size: 11.5px;">None</span>
+            {% endif %}
+          </td>
+          <td>
+            {{ emp.department.name|default:"Unassigned" }}<br/>
+            <span class="badge {% if emp.role == 'ADMIN' %}badge-danger{% elif emp.role == 'HR' %}badge-warning{% else %}badge-primary{% endif %}">
+              {{ emp.get_role_display }}
+            </span>
+          </td>
+          <td>
+            <small>{{ emp.email|default:"No email" }}</small><br/>
+            <small>{{ emp.phone|default:"-" }}</small>
+          </td>
+          <td>
+            <span class="badge badge-success" style="font-size: 12px; padding: 5px 10px;">
+              {{ emp.casual_leave_balance }} Days
+            </span>
+          </td>
+          <td>
+            {% if emp.is_active_employee %}
+            <span class="badge badge-success">Active</span>
+            {% else %}
+            <span class="badge badge-gray">Inactive</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+              <button type="button" onclick="openEditEmployeeModal('{{ emp.id }}', '{{ emp.employee_code }}', '{{ emp.user.first_name }}', '{{ emp.user.last_name }}', '{{ emp.email }}', '{{ emp.phone }}', '{{ emp.department.id|default:'' }}', '{{ emp.role }}', '{{ emp.casual_leave_balance }}', '{{ emp.is_active_employee }}', '{{ emp.raw_password|default:'' }}')" class="btn btn-primary btn-sm" style="font-weight: 600;">
+                ✏️ Edit Employee
+              </button>
+              <a href="{% url 'employees:edit' emp.id %}" class="btn btn-outline btn-sm" title="Edit Full Employee Profile">
+                ⚙️ Profile
+              </a>
+              <button type="button" onclick="openLeaveGrantModal('{{ emp.id }}')" class="btn btn-outline btn-sm" title="Grant Leave or 2h Permission">
+                📅 Leave
+              </button>
+              {% if emp.user.username != 'NETCOM' and not emp.user.is_superuser and emp.user != request.user %}
+              <a href="{% url 'employees:delete' emp.id %}" class="btn btn-danger btn-sm" title="Delete Employee" onclick="return confirm('Permanently delete {{ emp.display_name }}?');">
+                🗑️ Delete
+              </a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9" style="text-align: center; color: #94a3b8; padding: 24px;">No employee records found matching query.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Employee and HR Attendance Details (Display only 10 records initially with scrolling) -->
+<div class="panel">
+  <div class="panel-header">
+    <div>
+      <h3>Employee and HR Attendance Details</h3>
+      <small style="color: var(--gray-600);">Realtime duty punch & biometric logs.</small>
+    </div>
+    <a href="{% url 'attendance:list' %}" class="btn btn-outline btn-sm">Full Attendance Logs</a>
+  </div>
+
+  <div class="scroll-container-10">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Employee</th>
+          <th>Date</th>
+          <th>Punch In</th>
+          <th>Punch Out</th>
+          <th>Duration</th>
+          <th>Photos</th>
+          <th>Location / GPS</th>
+          <th>Attendance Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for att in employee_and_hr_attendances %}
+        <tr>
+          <td>
+            <b>{{ att.employee.employee_code }}</b><br/>
+            <small>{{ att.employee.display_name }}</small>
+          </td>
+          <td>{{ att.date|date:"Y-m-d (D)" }}</td>
+          <td>
+            {% if att.in_time %}
+            <span style="color: var(--success); font-weight: 600;">{{ att.in_time|time:"H:i:s" }}</span>
+            {% else %}-{% endif %}
+          </td>
+          <td>
+            {% if att.out_time %}
+            <span style="color: var(--danger); font-weight: 600;">{{ att.out_time|time:"H:i:s" }}</span>
+            {% elif att.in_time and not att.out_time %}
+            <span class="badge badge-danger" style="background: #fee2e2; color: #ef4444; font-size: 11px;">Missing</span>
+            {% else %}-{% endif %}
+          </td>
+          <td><span class="badge badge-primary">{{ att.total_work_time }}</span></td>
+          <td>
+            <div style="display: flex; gap: 4px; align-items: center;">
+              {% if att.in_photo %}
+              <a href="{{ att.in_photo.url }}" target="_blank" title="View Punch In Photo">
+                <img src="{{ att.in_photo.url }}" alt="In Photo" style="width: 32px; height: 32px; object-fit: cover; border-radius: 4px; border: 1px solid var(--gray-300);">
+              </a>
+              {% endif %}
+              {% if att.out_photo %}
+              <a href="{{ att.out_photo.url }}" target="_blank" title="View Punch Out Photo">
+                <img src="{{ att.out_photo.url }}" alt="Out Photo" style="width: 32px; height: 32px; object-fit: cover; border-radius: 4px; border: 1px solid var(--gray-300);">
+              </a>
+              {% endif %}
+              {% if not att.in_photo and not att.out_photo %}
+              <small style="color: var(--gray-600);">{{ att.update_source }}</small>
+              {% endif %}
+            </div>
+          </td>
+          <td>
+            {% if att.in_latitude and att.in_longitude %}
+            <a href="https://www.google.com/maps?q={{ att.in_latitude }},{{ att.in_longitude }}" target="_blank" style="text-decoration: none; font-size: 12px; color: var(--primary);">
+              📍 {{ att.in_latitude|floatformat:4 }}, {{ att.in_longitude|floatformat:4 }}
+            </a>
+            {% elif att.in_location %}
+            <small>{{ att.in_location }}</small>
+            {% else %}
+            <small style="color: var(--gray-600);">-</small>
+            {% endif %}
+          </td>
+          <td>
+            {% if att.status == 'Official Duty' or att.is_official_duty %}
+            <span class="badge badge-success" style="background: #059669; color: #fff;">Official Duty (Present)</span>
+            {% elif att.status == 'Missing Punch-Out' or att.is_missing_punch_out %}
+            <span class="badge badge-danger" style="background: #ef4444; color: #fff; font-weight: 700;">Missing Punch-Out</span>
+            {% elif att.status == 'Missed Punch-In' or att.is_missed_punch_in %}
+            <span class="badge badge-danger" style="background: #ef4444; color: #fff; font-weight: 700;">Missed Punch-In</span>
+            {% elif att.status == 'Permission - 2 Hours' or att.is_permission %}
+            <span class="badge badge-permission">Permission – 2 Hours</span>
+            {% elif att.status == 'Half Day' %}
+            <span class="badge badge-warning">Half Day (Yellow)</span>
+            {% elif att.status == 'Present' %}
+            <span class="badge badge-success">Present (Full Day)</span>
+            {% elif att.status == 'On Leave' %}
+            <span class="badge badge-primary">Approved Leave</span>
+            {% else %}
+            <span class="badge badge-danger">{{ att.status }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" style="text-align: center; color: #94a3b8; padding: 24px;">No attendance records available.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- All Leave Requests & All Work Updates (Display only 10 records initially with scrolling) -->
+<div class="grid-2">
+  <!-- All Leave Requests: 10 records initially, scroll for additional -->
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h3>All Leave Requests</h3>
+        
+      </div>
+      <a href="{% url 'leave_management:list' %}" class="btn btn-outline btn-sm">Leave Center</a>
+    </div>
+
+    <div class="scroll-container-10">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Type</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for l in all_leave_requests %}
+          <tr>
+            <td>
+              <b>{{ l.employee.employee_code }}</b><br/>
+              <small>{{ l.employee.display_name }}</small>
+            </td>
+            <td><b>{{ l.leave_type }}</b></td>
+            <td>{{ l.from_date|date:"M d" }} - {{ l.to_date|date:"M d" }} ({{ l.total_days }}d)</td>
+            <td>
+              <span class="badge {% if l.status == 'Approved' %}badge-success{% elif l.status == 'Rejected' %}badge-danger{% else %}badge-warning{% endif %}">
+                {{ l.status }}
+              </span>
+            </td>
+            <td>
+              {% if l.status == 'Pending' %}
+              <button type="button" onclick="openReviewModal('{{ l.id }}', '{{ l.employee.display_name }}', '{{ l.employee.employee_code }}', '{{ l.leave_type }}', '{{ l.total_days }}', '{{ l.from_date|date:'Y-m-d' }}', '{{ l.to_date|date:'Y-m-d' }}', '{{ l.reason|escapejs }}', '{{ l.employee.casual_leave_balance }}')" class="btn btn-primary btn-sm">Review & Decide</button>
+              {% else %}
+              <span class="badge {% if l.status == 'Approved' %}badge-success{% elif l.status == 'Rejected' %}badge-danger{% elif l.status == 'Cancelled' %}badge-gray{% else %}badge-warning{% endif %}">{{ l.status }}</span>
+              {% if l.rejection_reason %}
+              <div style="font-size: 10.5px; color: {% if l.status == 'Cancelled' %}#64748b{% else %}#ef4444{% endif %}; margin-top: 2px; max-width: 140px; word-break: break-word;">{{ l.rejection_reason }}</div>
+              {% endif %}
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 20px;">No leave requests found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- All Work Updates: 10 records initially, scroll for additional -->
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h3>All Work Updates</h3>
+        
+      </div>
+      <a href="{% url 'attendance:daily_work' %}" class="btn btn-outline btn-sm">Work Hub</a>
+    </div>
+
+    <div class="scroll-container-10">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Staff</th>
+            <th>Date</th>
+            <th>Project</th>
+            <th>Accomplishment & Site</th>
+            <th>Attachment</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for w in all_work_updates %}
+          <tr>
+            <td>
+              <b>{{ w.employee.employee_code }}</b><br/>
+              <small>{{ w.employee.display_name }}</small>
+            </td>
+            <td>{{ w.date|date:"M d" }}</td>
+            <td><b>{{ w.project_name }}</b></td>
+            <td>
+              <div style="max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ w.work_details }}">{{ w.work_details }}</div>
+              {% if w.is_offsite %}
+              <span class="badge" style="background: #e0e7ff; color: #3730a3; font-size: 10px; margin-top: 2px;">
+                📍 Off-Site{% if w.location_notes %}: {{ w.location_notes }}{% endif %}
+              </span>
+              {% endif %}
+            </td>
+            <td>
+              {% if w.work_image %}
+              <img src="{{ w.work_image.url }}" alt="Attachment" class="work-thumb" onclick="openAdminWorkImageModal('{{ w.work_image.url }}')" title="Click to view full photo">
+              {% else %}
+              <span style="color: #94a3b8; font-size: 11px;">None</span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="badge {% if w.status == 'Completed' %}badge-success{% elif w.status == 'In Progress' %}badge-primary{% else %}badge-warning{% endif %}">
+                {{ w.status }}
+              </span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 20px;">No work updates logged.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- 1. Dedicated Image Management Modal (Banner & Popup Image) -->
+<div class="modal-overlay" id="uploadBannerModal">
+  <div class="modal-dialog" style="max-width: 600px;">
+    <div class="modal-header">
+      <h3>Image Management: Dashboard Banner & Announcement Popup</h3>
+      <button type="button" class="modal-close" onclick="closeBannerUploadModal()">&times;</button>
+    </div>
+    <div class="modal-body" style="padding: 20px;">
+      <!-- Tab Navigation -->
+      <div style="display: flex; gap: 8px; border-bottom: 2px solid #e2e8f0; margin-bottom: 18px;">
+        <button type="button" id="adminTabBtnBanner" class="btn btn-sm" onclick="switchAdminImageTab('banner')" style="border-radius: 6px 6px 0 0; background: #2563eb; color: #fff; border: none; padding: 8px 16px;">
+          🎨 Dashboard Banner
+        </button>
+        <button type="button" id="adminTabBtnPopup" class="btn btn-sm" onclick="switchAdminImageTab('popup')" style="border-radius: 6px 6px 0 0; background: #f1f5f9; color: #475569; border: none; padding: 8px 16px;">
+          📢 Announcement Popup
+        </button>
+      </div>
+
+      <!-- Tab 1: Dashboard Banner -->
+      <div id="adminTabContentBanner">
+        <form method="POST" action="{% url 'dashboard:index' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="upload_banner">
+
+          <div class="form-group">
+            <label class="form-label" style="font-weight: 600;">Banner Title / Headline</label>
+            <input type="text" name="banner_title" value="{{ active_banner.title|default:'Netcom Enterprise Management Portal' }}" class="form-input" placeholder="e.g. Netcom Enterprise Updates">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="font-weight: 600;">Select New Banner Image</label>
+            <input type="file" name="banner_image" accept="image/*" class="form-input" required>
+            <small style="color: var(--gray-600); display: block; margin-top: 4px;">Recommended size: 1200x350px. JPG, PNG, or WebP.</small>
+          </div>
+
+          {% if active_banner and active_banner.image %}
+          <div style="margin: 12px 0;">
+            <small style="display: block; margin-bottom: 4px; font-weight: 600; color: #64748b;">Current Active Banner Preview:</small>
+            <img src="{{ active_banner.image.url }}" alt="Preview" style="width: 100%; max-height: 120px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--gray-300);">
+          </div>
+          {% endif %}
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+            <button type="button" class="btn btn-outline" onclick="closeBannerUploadModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Upload & Publish Banner</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Tab 2: Announcement Popup -->
+      <div id="adminTabContentPopup" style="display: none;">
+        <form method="POST" action="{% url 'dashboard:index' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="upload_popup">
+
+          <div class="form-group">
+            <label class="form-label" style="font-weight: 600;">Popup Title</label>
+            <input type="text" name="popup_title" value="{{ active_popup.title|default:'Netcom Corporate Announcement' }}" class="form-input" placeholder="e.g. Netcom Important Update">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="font-weight: 600;">Popup Description / Caption (Optional)</label>
+            <textarea name="popup_description" class="form-input" rows="2" placeholder="Brief caption or instructions...">{{ active_popup.description }}</textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="font-weight: 600;">Select Popup Announcement Image</label>
+            <input type="file" name="popup_image" accept="image/*" class="form-input" required>
+          </div>
+
+          {% if active_popup and active_popup.image %}
+          <div style="margin: 12px 0;">
+            <small style="display: block; margin-bottom: 4px; font-weight: 600; color: #64748b;">Current Active Popup Preview:</small>
+            <img src="{{ active_popup.image.url }}" alt="Preview" style="width: 100%; max-height: 120px; object-fit: contain; background: #000; border-radius: var(--radius-sm); border: 1px solid var(--gray-300);">
+          </div>
+          {% endif %}
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+            <button type="button" class="btn btn-outline" onclick="closeBannerUploadModal()">Cancel</button>
+            <button type="submit" class="btn btn-success">Publish Popup to Login & Dashboards</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Grant / Update Employee Leave & Permission Modal -->
+<div class="modal-overlay" id="leaveGrantModal">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3>Grant / Update Employee Leave & Permission</h3>
+      <button type="button" class="modal-close" onclick="closeLeaveGrantModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form method="POST" action="{% url 'dashboard:index' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_employee_leave">
+
+        <div class="form-group">
+          <label class="form-label">Employee</label>
+          <select name="employee_id" id="grantLeaveEmpSelect" class="form-select" required>
+            {% for emp in all_active_employees %}
+            <option value="{{ emp.id }}">{{ emp.employee_code }} - {{ emp.display_name }} (Balance: {{ emp.casual_leave_balance }}d)</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select name="leave_type" class="form-select" required>
+              <option value="Casual Leave">Casual Leave (Paid)</option>
+              <option value="Sick Leave">Sick Leave (Paid)</option>
+              <option value="Permission – 2 Hours">Permission – 2 Hours (No Salary Deduction)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Approval Status</label>
+            <select name="status" class="form-select">
+              <option value="Approved" selected>Approved (Immediate)</option>
+              <option value="Pending">Pending</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">From Date</label>
+            <input type="date" name="from_date" value="{{ today|date:'Y-m-d' }}" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">To Date</label>
+            <input type="date" name="to_date" value="{{ today|date:'Y-m-d' }}" class="form-input" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Reason / Authorization Details</label>
+          <textarea name="reason" class="form-input" rows="2" placeholder="State reason or official approval notes..." required></textarea>
+        </div>
+
+        <div style="padding: 10px; background: var(--gray-50); border-radius: var(--radius-sm); font-size: 12px; color: var(--gray-600); margin-bottom: 16px;">
+          ⚖️ <b>Salary Rule:</b> Up to 2 hours of approved permission and approved leave days do not result in salary deductions. Updates are immediately reflected in employee records and calendars.
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-outline" onclick="closeLeaveGrantModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Leave Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Edit Employee Modal -->
+<div class="modal-overlay" id="editEmployeeModal">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3>Edit Employee Details & Leave Balance</h3>
+      <button type="button" class="modal-close" onclick="closeEditEmployeeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form method="POST" action="{% url 'dashboard:index' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_employee_details">
+        <input type="hidden" name="employee_id" id="modalEmpId">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Employee Code</label>
+            <input type="text" id="modalEmpCode" class="form-input" readonly style="background: var(--gray-100);">
+          </div>
+          <div class="form-group">
+            <label class="form-label">System Role</label>
+            <select name="role" id="modalEmpRole" class="form-select">
+              <option value="EMPLOYEE">Employee</option>
+              <option value="HR">HR Manager</option>
+              <option value="ADMIN">Administrator</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" name="first_name" id="modalEmpFirstName" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" name="last_name" id="modalEmpLastName" class="form-input">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" id="modalEmpEmail" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="text" name="phone" id="modalEmpPhone" class="form-input">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Employee Password (View / Reset)</label>
+            <input type="text" name="password" id="modalEmpPassword" class="form-input" placeholder="Enter password to set">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Department</label>
+            <select name="department" id="modalEmpDept" class="form-select">
+              <option value="">-- No Department --</option>
+              {% for d in departments %}
+              <option value="{{ d.id }}">{{ d.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Profile Picture</label>
+            <input type="file" name="profile_picture" id="modalEmpPic" class="form-input" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Submitted Document</label>
+            <input type="file" name="document" id="modalEmpDoc" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Casual Leave Balance (Days)</label>
+          <input type="number" name="casual_leave_balance" id="modalEmpLeaveBalance" class="form-input" min="0" required>
+        </div>
+
+        <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" name="is_active_employee" id="modalEmpActive" class="form-checkbox" style="width: 18px; height: 18px;">
+          <label for="modalEmpActive" class="form-label" style="margin-bottom: 0;">Active Employee Account</label>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
+          <button type="button" class="btn btn-outline" onclick="closeEditEmployeeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes to Database</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Office Paid Leave Modal -->
+<div class="modal-overlay" id="officePaidLeaveModal">
+  <div class="modal-dialog" style="max-width: 580px;">
+    <div class="modal-header">
+      <h3>Paid Leave for the Office</h3>
+      <button type="button" class="modal-close" onclick="closeOfficePaidLeaveModal()">&times;</button>
+    </div>
+    <div class="modal-body" style="padding: 20px;">
+      <p style="font-size: 13px; color: #475569; margin-bottom: 16px;">
+        Mark an office-wide paid holiday. Synchronizes with employee calendars (green badge), records full attendance, and ensures zero salary deduction without reducing employee casual leave balances.
+      </p>
+      <form method="POST" action="{% url 'dashboard:index' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="mark_office_paid_leave">
+
+        <div class="form-group">
+          <label class="form-label" style="font-weight: 600;">Office Paid Leave Date</label>
+          <input type="date" name="date" value="{{ today|date:'Y-m-d' }}" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="font-weight: 600;">Holiday Title / Name</label>
+          <input type="text" name="title" class="form-input" placeholder="e.g. Founder's Day / Festival Holiday" value="Paid Leave for the Office" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="font-weight: 600;">Description / Reason</label>
+          <textarea name="description" class="form-input" rows="2" placeholder="Optional details..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+          <button type="button" class="btn btn-outline" onclick="closeOfficePaidLeaveModal()">Cancel</button>
+          <button type="submit" class="btn btn-success" style="background: #059669; border-color: #047857;">Mark Office Paid Leave</button>
+        </div>
+      </form>
+
+      {% if all_office_paid_leaves %}
+      <div style="margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+        <h4 style="font-size: 13.5px; margin-bottom: 10px; color: #1e293b;">Active Office Paid Leave Dates:</h4>
+        <div style="max-height: 180px; overflow-y: auto;">
+          <table class="data-table" style="font-size: 12px;">
+            <thead>
+              <tr><th>Date</th><th>Title</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              {% for opl in all_office_paid_leaves %}
+              <tr>
+                <td><b>{{ opl.date|date:"Y-m-d (D)" }}</b></td>
+                <td>{{ opl.title }}</td>
+                <td>
+                  <form method="POST" action="{% url 'dashboard:index' %}" style="display: inline;" onsubmit="return confirm('Remove office paid leave for {{ opl.date }}?');">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete_office_paid_leave">
+                    <input type="hidden" name="office_paid_leave_id" value="{{ opl.id }}">
+                    <button type="submit" class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 11px;">Remove</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- 4. Manual Attendance Entry / Correction Modal -->
+<div class="modal-overlay" id="manualAttendanceModal">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3>Manual Attendance Override & Audit Entry</h3>
+      <button type="button" class="modal-close" onclick="closeManualAttendanceModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form method="POST" action="{% url 'dashboard:index' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="manual_attendance">
+
+        <div class="form-group">
+          <label class="form-label">Employee</label>
+          {{ manual_form.employee }}
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            {{ manual_form.date }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Punch In</label>
+            {{ manual_form.in_time }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Punch Out</label>
+            {{ manual_form.out_time }}
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label class="form-label">Attendance Status</label>
+            {{ manual_form.status }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Permission / Leave Type</label>
+            {{ manual_form.leave_type }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Reason / Notes</label>
+          {{ manual_form.leave_reason }}
+        </div>
+
+        <div style="padding: 10px; background: var(--gray-50); border-radius: var(--radius-sm); font-size: 12px; color: var(--gray-600); margin-bottom: 16px;">
+          🛡️ <b>Audit Trail:</b> This manual update is permanently logged with your administrator identity, timestamp, and IP address.
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-outline" onclick="closeManualAttendanceModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save & Audit Attendance</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 5. Add Biometric Device Modal -->
+<div class="modal-overlay" id="addDeviceModal">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3>Configure Biometric Attendance Machine</h3>
+      <button type="button" class="modal-close" onclick="closeDeviceModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form method="POST" action="{% url 'attendance:device_manage' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add_device">
+
+        <div class="form-group">
+          <label class="form-label">Device Name</label>
+          {{ device_form.name }}
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Machine Model</label>
+            {{ device_form.device_model }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Protocol</label>
+            {{ device_form.protocol }}
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">IP Address / Host</label>
+            {{ device_form.ip_address }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Port</label>
+            {{ device_form.port }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Communication Key</label>
+          {{ device_form.communication_key }}
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
+          <button type="button" class="btn btn-outline" onclick="closeDeviceModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save & Register Device</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Realtime search for employee table
+  function filterEmployeeTable() {
+    const input = document.getElementById('employeeSearchInput');
+    const filter = input.value.toLowerCase().trim();
+    const rows = document.querySelectorAll('#employeeDetailsTable .emp-row');
+
+    rows.forEach(row => {
+      const code = row.getAttribute('data-code') || '';
+      const name = row.getAttribute('data-name') || '';
+      if (code.includes(filter) || name.includes(filter)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  // Banner Modal
+  function openBannerUploadModal() {
+    document.getElementById('uploadBannerModal').classList.add('active');
+  }
+  function closeBannerUploadModal() {
+    document.getElementById('uploadBannerModal').classList.remove('active');
+  }
+
+  function switchAdminImageTab(tab) {
+    const tabBanner = document.getElementById('adminTabContentBanner');
+    const tabPopup = document.getElementById('adminTabContentPopup');
+    const btnBanner = document.getElementById('adminTabBtnBanner');
+    const btnPopup = document.getElementById('adminTabBtnPopup');
+
+    if (tab === 'banner') {
+      tabBanner.style.display = 'block';
+      tabPopup.style.display = 'none';
+      btnBanner.style.background = '#2563eb';
+      btnBanner.style.color = '#fff';
+      btnPopup.style.background = '#f1f5f9';
+      btnPopup.style.color = '#475569';
+    } else {
+      tabBanner.style.display = 'none';
+      tabPopup.style.display = 'block';
+      btnPopup.style.background = '#2563eb';
+      btnPopup.style.color = '#fff';
+      btnBanner.style.background = '#f1f5f9';
+      btnBanner.style.color = '#475569';
+    }
+  }
+
+  // Leave Grant Modal
+  function openLeaveGrantModal(empId) {
+    if (empId) {
+      document.getElementById('grantLeaveEmpSelect').value = empId;
+    }
+    document.getElementById('leaveGrantModal').classList.add('active');
+  }
+  function closeLeaveGrantModal() {
+    document.getElementById('leaveGrantModal').classList.remove('active');
+  }
+
+  // Edit Employee Modal Controls
+  function openEditEmployeeModal(id, code, first, last, email, phone, deptId, role, leaveBal, active, password) {
+    document.getElementById('modalEmpId').value = id;
+    document.getElementById('modalEmpCode').value = code;
+    document.getElementById('modalEmpFirstName').value = first;
+    document.getElementById('modalEmpLastName').value = last;
+    document.getElementById('modalEmpEmail').value = email;
+    document.getElementById('modalEmpPhone').value = phone;
+    document.getElementById('modalEmpDept').value = deptId || '';
+    document.getElementById('modalEmpRole').value = role || 'EMPLOYEE';
+    document.getElementById('modalEmpLeaveBalance').value = leaveBal || '0';
+    document.getElementById('modalEmpActive').checked = (active === 'True' || active === 'true' || active === true);
+    if (document.getElementById('modalEmpPassword')) {
+      document.getElementById('modalEmpPassword').value = password || '';
+    }
+    document.getElementById('editEmployeeModal').classList.add('active');
+  }
+  function closeEditEmployeeModal() {
+    document.getElementById('editEmployeeModal').classList.remove('active');
+  }
+
+  function toggleAdminPw(empId) {
+    const masked = document.getElementById('adminPwMasked_' + empId);
+    const plain = document.getElementById('adminPwPlain_' + empId);
+    if (!masked || !plain) return;
+    if (masked.style.display === 'none') {
+      masked.style.display = 'inline';
+      plain.style.display = 'none';
+    } else {
+      masked.style.display = 'none';
+      plain.style.display = 'inline';
+    }
+  }
+
+  function openOfficePaidLeaveModal() {
+    document.getElementById('officePaidLeaveModal').classList.add('active');
+  }
+  function closeOfficePaidLeaveModal() {
+    document.getElementById('officePaidLeaveModal').classList.remove('active');
+  }
+
+  // Manual Attendance Modal
+  function openManualAttendanceModal(empId) {
+    if (empId) {
+      const sel = document.querySelector('#manualAttendanceModal select[name="employee"]');
+      if (sel) sel.value = empId;
+    }
+    document.getElementById('manualAttendanceModal').classList.add('active');
+  }
+  function closeManualAttendanceModal() {
+    document.getElementById('manualAttendanceModal').classList.remove('active');
+  }
+
+  // Biometric Device Modal
+  function openDeviceModal() {
+    document.getElementById('addDeviceModal').classList.add('active');
+  }
+  function closeDeviceModal() {
+    document.getElementById('addDeviceModal').classList.remove('active');
+  }
+
+  // Admin Leave Review Handlers
+  function openReviewModal(id, empName, empCode, leaveType, totalDays, fromDate, toDate, reason, balance) {
+    document.getElementById('leaveReviewForm').action = '/leave/' + id + '/review/';
+    document.getElementById('revEmpNameCode').textContent = empCode + ' - ' + empName;
+    document.getElementById('revLeaveType').textContent = leaveType;
+    document.getElementById('revDates').textContent = fromDate + ' to ' + toDate;
+    document.getElementById('revDays').textContent = totalDays;
+    document.getElementById('revBalance').textContent = balance;
+    document.getElementById('revReason').textContent = reason;
+    document.getElementById('revStatusSelect').value = 'Approved';
+    document.getElementById('revClassificationSelect').value = (leaveType === 'Sick Leave') ? 'Paid Sick Leave' : 'Paid Casual Leave';
+    onReviewStatusChange();
+    document.getElementById('leaveReviewModal').classList.add('active');
+  }
+
+  function closeReviewModal() {
+    document.getElementById('leaveReviewModal').classList.remove('active');
+  }
+
+  function onReviewStatusChange() {
+    const status = document.getElementById('revStatusSelect').value;
+    const classGroup = document.getElementById('classificationGroup');
+    const rejGroup = document.getElementById('rejectionGroup');
+    const submitBtn = document.getElementById('revSubmitBtn');
+    if (status === 'Approved') {
+      classGroup.style.display = 'block';
+      rejGroup.style.display = 'none';
+      submitBtn.textContent = 'Approve Leave Request';
+      submitBtn.className = 'btn btn-success';
+    } else {
+      classGroup.style.display = 'none';
+      rejGroup.style.display = 'block';
+      submitBtn.textContent = 'Confirm Rejection';
+      submitBtn.className = 'btn btn-danger';
+    }
+  }
+
+  function openAdminWorkImageModal(url) {
+    document.getElementById('adminWorkModalImg').src = url;
+    document.getElementById('adminWorkImageModal').classList.add('active');
+  }
+
+  function closeAdminWorkImageModal() {
+    document.getElementById('adminWorkImageModal').classList.remove('active');
+  }
+
+  // Admin Duty Punch Terminal JS
+  let adminLat = null, adminLon = null;
+  let adminCameraStream = null, adminVideo = null;
+
+  function updateAdminClock() {
+    const clock = document.getElementById('adminLiveClock');
+    if (!clock) return;
+    const now = new Date();
+    clock.textContent = now.toLocaleTimeString();
+  }
+  setInterval(updateAdminClock, 1000);
+  updateAdminClock();
+
+  function initAdminCamera() {
+    adminVideo = document.getElementById('adminCameraVideo');
+    const fallback = document.getElementById('adminCameraFallback');
+    if (!adminVideo) return;
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+        .then(stream => {
+          adminCameraStream = stream;
+          adminVideo.srcObject = stream;
+          if (fallback) fallback.style.display = 'none';
+        })
+        .catch(err => {
+          if (fallback) fallback.style.display = 'block';
+        });
+    } else {
+      if (fallback) fallback.style.display = 'block';
+    }
+  }
+
+  function initAdminGps() {
+    if (!navigator.geolocation) {
+      const text = document.getElementById('adminGpsText');
+      if (text) text.textContent = 'GPS via Network IP';
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      function(pos) {
+        adminLat = pos.coords.latitude.toFixed(6);
+        adminLon = pos.coords.longitude.toFixed(6);
+        const text = document.getElementById('adminGpsText');
+        if (text) text.textContent = `${adminLat}, ${adminLon}`;
+      },
+      function(err) {
+        const text = document.getElementById('adminGpsText');
+        if (text) text.textContent = 'GPS via Network IP';
+      }
+    );
+  }
+
+  let adminPunchSubmitting = false;
+  function executeAdminPunch(action) {
+    if (adminPunchSubmitting) return;
+    adminPunchSubmitting = true;
+
+    const form = document.getElementById('adminPunchForm');
+    const photoInput = document.getElementById('adminPhotoData');
+    const latInput = document.getElementById('adminLatInput');
+    const lonInput = document.getElementById('adminLonInput');
+    const locInput = document.getElementById('adminLocInput');
+
+    if (adminLat && adminLon) {
+      latInput.value = adminLat;
+      lonInput.value = adminLon;
+      locInput.value = `GPS: ${adminLat}, ${adminLon}`;
+    }
+
+    if (adminCameraStream && adminVideo && adminVideo.videoWidth > 0) {
+      const canvas = document.getElementById('adminCameraCanvas');
+      canvas.width = adminVideo.videoWidth;
+      canvas.height = adminVideo.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(adminVideo, 0, 0, canvas.width, canvas.height);
+      photoInput.value = canvas.toDataURL('image/jpeg', 0.85);
+    }
+
+    let inputAction = document.createElement('input');
+    inputAction.type = 'hidden';
+    inputAction.name = 'action';
+    inputAction.value = action;
+    form.appendChild(inputAction);
+    form.submit();
+  }
+
+  function openAdminOfficialDutyModal() {
+    document.getElementById('adminOfficialDutyModal').classList.add('active');
+  }
+
+  function closeAdminOfficialDutyModal() {
+    document.getElementById('adminOfficialDutyModal').classList.remove('active');
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    initAdminCamera();
+    initAdminGps();
+  });
+
+</script>
+
+<!-- Leave Review & Classification Modal -->
+<div class="modal-overlay" id="leaveReviewModal">
+  <div class="modal-card" style="max-width: 520px;">
+    <div class="modal-header">
+      <h3 style="font-size: 17px; margin: 0;">Review Leave Request</h3>
+      <button type="button" class="modal-close" onclick="closeReviewModal()">&times;</button>
+    </div>
+    <form method="POST" id="leaveReviewForm" action="">
+      {% csrf_token %}
+      <div class="modal-body" style="padding: 20px;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <b id="revEmpNameCode">Employee</b>
+            <span class="badge badge-primary" id="revLeaveType">Casual Leave</span>
+          </div>
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">
+            <span>Dates: <b id="revDates">2026-10-12 to 2026-10-13</b> (<span id="revDays">1</span> day(s))</span>
+          </div>
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">
+            <span>Casual Leave Balance Available: <b id="revBalance" style="color: #0284c7;">2</b> day(s)</span>
+          </div>
+          <div style="font-size: 13px; color: #334155; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1;">
+            <b>Reason:</b> <span id="revReason">N/A</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="font-weight: 600;">Action Decision</label>
+          <select name="status" id="revStatusSelect" class="form-select" onchange="onReviewStatusChange()" required>
+            <option value="Approved">Approve Request</option>
+            <option value="Rejected">Reject Request</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="classificationGroup">
+          <label class="form-label" style="font-weight: 600;">Leave Classification</label>
+          <select name="classification" id="revClassificationSelect" class="form-select">
+            <option value="Paid Casual Leave">Paid Casual Leave (Full Pay, Deducts Balance)</option>
+            <option value="Paid Sick Leave">Paid Sick Leave (Full Pay)</option>
+          </select>
+          <small style="color: var(--gray-600); display: block; margin-top: 4px;">
+            Classifying as <b>Paid Casual Leave</b> or <b>Paid Sick Leave</b> pays full salary with zero deduction.
+          </small>
+        </div>
+
+        <div class="form-group" id="rejectionGroup" style="display: none;">
+          <label class="form-label" style="font-weight: 600; color: #ef4444;">Rejection Reason (Required for Rejection)</label>
+          <textarea name="rejection_reason" id="revRejectionReason" class="form-input" rows="2" placeholder="Explain rejection reason (will be displayed in red on employee calendar)..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn btn-outline" onclick="closeReviewModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="revSubmitBtn">Confirm & Save Decision</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Work Image Lightbox Modal -->
+<div class="modal-overlay" id="adminWorkImageModal" onclick="closeAdminWorkImageModal()">
+  <div class="modal-card" style="max-width: 760px; background: transparent; box-shadow: none; border: none; text-align: center;" onclick="event.stopPropagation()">
+    <img id="adminWorkModalImg" src="" alt="Work Photo" style="max-width: 100%; max-height: 82vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+    <div style="margin-top: 12px;">
+      <button type="button" class="btn btn-outline" style="color: #fff; border-color: rgba(255,255,255,0.4);" onclick="closeAdminWorkImageModal()">Close Preview</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Official Office Duty Modal -->
+<div class="modal-overlay" id="adminOfficialDutyModal">
+  <div class="modal-card" style="max-width: 540px;">
+    <div class="modal-header">
+      <h3 style="font-size: 16px; margin: 0;">🏢 Mark Employee on Official Office Duty / Assignment</h3>
+      <button type="button" class="modal-close" onclick="closeAdminOfficialDutyModal()">&times;</button>
+    </div>
+    <form method="POST" action="{% url 'dashboard:index' %}">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="mark_official_duty">
+
+      <div class="modal-body" style="padding: 20px;">
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 12px; margin-bottom: 16px; font-size: 12.5px; color: #1e40af; line-height: 1.45;">
+          ℹ️ When an employee is placed on <b>Official Office Duty</b> or an official work assignment for a selected date, the system will automatically mark them as <b>Present</b> instead of Leave. Their attendance records and salary calculations reflect full attendance (9 hours), and any deducted casual leave balance for that date is automatically restored.
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="font-weight: 600;">Target Employee</label>
+          <select name="employee_id" class="form-select" required>
+            <option value="" disabled selected>-- Select Employee --</option>
+            {% for emp in all_active_employees %}
+            <option value="{{ emp.id }}" {% if calendar_employee.id == emp.id %}selected{% endif %}>
+              {{ emp.employee_code }} - {{ emp.display_name }} ({{ emp.department.name|default:"General" }})
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="font-weight: 600;">Assignment Date</label>
+          <input type="date" name="date" value="{{ today|date:'Y-m-d' }}" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="font-weight: 600;">Duty Title / Assignment Name</label>
+          <input type="text" name="duty_title" value="Official Office Duty / Work Assignment" class="form-input" placeholder="e.g. Client Site Audit, Ministry Liaison, Off-Site Deployment" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="font-weight: 600;">Assignment Notes & Reference</label>
+          <textarea name="notes" class="form-input" rows="3" placeholder="Provide assignment authorization details or instructions..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn btn-outline" onclick="closeAdminOfficialDutyModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" style="background: #2563eb;">Confirm Official Duty (Mark Present)</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

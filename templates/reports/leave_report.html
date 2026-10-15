@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block page_title %}Leave Utilization Analytics{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <h3>Annual Leave Metrics: {{ year }}</h3>
+  </div>
+
+  <div class="panel-body" style="padding-bottom: 0;">
+    <form method="GET" style="display: flex; gap: 12px; margin-bottom: 20px;">
+      <input type="number" name="year" value="{{ year }}" class="form-input" style="max-width: 140px;">
+      <button type="submit" class="btn btn-primary">Filter Year</button>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Employee</th>
+          <th>Type</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Total Days</th>
+          <th>Reason</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for l in leaves %}
+        <tr>
+          <td>
+            <b>{{ l.employee.employee_code }}</b><br/>
+            <small>{{ l.employee.display_name }}</small>
+          </td>
+          <td>{{ l.leave_type }}</td>
+          <td>{{ l.from_date }}</td>
+          <td>{{ l.to_date }}</td>
+          <td><b>{{ l.total_days }}d</b></td>
+          <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ l.reason }}</td>
+          <td>
+            <span class="badge {% if l.status == 'Approved' %}badge-success{% elif l.status == 'Pending' %}badge-warning{% else %}badge-danger{% endif %}">
+              {{ l.status }}
+            </span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">No leave logs recorded for {{ year }}.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

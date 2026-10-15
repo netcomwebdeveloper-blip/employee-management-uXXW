@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+  <div class="panel">
+    <div class="panel-header">
+      <h3>{{ title }}</h3>
+      <a href="{% url 'employees:list' %}" class="btn btn-outline btn-sm">Cancel</a>
+    </div>
+    <div class="panel-body">
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          {% for field in form %}
+          <div class="form-group" style="{% if field.name == 'address' or field.name == 'document' %}grid-column: span 2;{% endif %}">
+            <label class="form-label">{{ field.label }} {% if field.field.required %}<span style="color:var(--danger)">*</span>{% endif %}</label>
+            {{ field }}
+            {% if field.help_text %}<small style="color: var(--gray-600); display: block; margin-top: 4px;">{{ field.help_text }}</small>{% endif %}
+            {% if field.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ field.errors.0 }}</div>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        <div style="margin-top: 24px; display: flex; gap: 12px;">
+          <button type="submit" class="btn btn-primary" style="padding: 12px 24px;">Save Employee Record</button>
+          <a href="{% url 'employees:list' %}" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

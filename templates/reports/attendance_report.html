@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block page_title %}Attendance Audit Report{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <h3>Attendance Audit Query</h3>
+    <a href="?start_date={{ start_date }}&end_date={{ end_date }}&department={{ dept_id }}&export=csv" class="btn btn-success btn-sm">
+      📥 Download CSV Report
+    </a>
+  </div>
+
+  <div class="panel-body" style="padding-bottom: 0;">
+    <form method="GET" style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+      <div style="flex: 1; min-width: 150px;">
+        <label class="form-label">Start Date</label>
+        <input type="date" name="start_date" value="{{ start_date }}" class="form-input">
+      </div>
+      <div style="flex: 1; min-width: 150px;">
+        <label class="form-label">End Date</label>
+        <input type="date" name="end_date" value="{{ end_date }}" class="form-input">
+      </div>
+      <div style="flex: 1; min-width: 180px;">
+        <label class="form-label">Department</label>
+        <select name="department" class="form-select">
+          <option value="">All Departments</option>
+          {% for d in departments %}
+          <option value="{{ d.id }}" {% if dept_id == d.id|stringformat:"s" %}selected{% endif %}>{{ d.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div style="align-self: flex-end;">
+        <button type="submit" class="btn btn-primary">Generate Report</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Employee Code</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Date</th>
+          <th>In Time</th>
+          <th>Out Time</th>
+          <th>Total Work</th>
+          <th>Source</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr>
+          <td><b>{{ r.employee.employee_code }}</b></td>
+          <td>{{ r.employee.display_name }}</td>
+          <td>{{ r.employee.department.name|default:"-" }}</td>
+          <td>{{ r.date }}</td>
+          <td>{{ r.in_time|time:"H:i"|default:"-" }}</td>
+          <td>{{ r.out_time|time:"H:i"|default:"-" }}</td>
+          <td><span class="badge badge-primary">{{ r.total_work_time }}</span></td>
+          <td><small>{{ r.update_source }}</small></td>
+          <td>
+            <span class="badge {% if r.status == 'Present' %}badge-success{% else %}badge-danger{% endif %}">{{ r.status }}</span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9" style="text-align: center; color: #94a3b8; padding: 24px;">No records found for specified dates.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

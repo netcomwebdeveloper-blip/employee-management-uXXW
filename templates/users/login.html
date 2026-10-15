@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | NETCOM Employee Management Portal</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <img src="{% static 'images/netcom_logo.png' %}" alt="Netcom Logo" style="height: 56px; max-width: 170px; object-fit: contain; margin: 0 auto 12px; display: block;">
+        <h2>Netcom Computers Pvt Ltd</h2>
+        <p>Employee Management Portal</p>
+      </div>
+
+      {% if messages %}
+      <div class="alert-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }}">
+          <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label" for="id_username">Username</label>
+          <input type="text" name="username" id="id_username" class="form-input" placeholder="Enter username" required autofocus autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_password">Password</label>
+          <input type="password" name="password" id="id_password" class="form-input" placeholder="Enter password" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px; font-size: 15px;">
+          Sign In to Portal →
+        </button>
+      </form>
+
+      {% if active_popup and active_popup.image %}
+      <div style="text-align: center; margin-top: 14px;">
+        <button type="button" onclick="openLoginPopup()" class="btn btn-outline btn-sm" style="font-size: 12px;">
+          📢 View Netcom Announcement
+        </button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if active_popup and active_popup.image %}
+  <!-- Login Announcement Popup Modal -->
+  <div class="announcement-popup-overlay active" id="loginPopupModal">
+    <div class="announcement-popup-card">
+      <div class="announcement-popup-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 18px;">📢</span>
+          <h3 style="margin: 0; font-size: 16px; color: var(--dark); font-weight: 700;">{{ active_popup.title|default:"Netcom Announcement" }}</h3>
+        </div>
+        <button type="button" class="modal-close" onclick="closeLoginPopup()" title="Close">&times;</button>
+      </div>
+      <div class="announcement-popup-body">
+        <img src="{{ active_popup.image.url }}" alt="{{ active_popup.title }}" class="announcement-popup-img">
+        {% if active_popup.description %}
+        <p style="margin-top: 14px; font-size: 13.5px; color: var(--gray-700); line-height: 1.5; text-align: left;">
+          {{ active_popup.description }}
+        </p>
+        {% endif %}
+      </div>
+      <div style="padding: 12px 20px; background: #f8fafc; border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="closeLoginPopup()">
+          Proceed to Login
+        </button>
+      </div>
+    </div>
+  </div>
+  <script>
+    function closeLoginPopup() {
+      const m = document.getElementById('loginPopupModal');
+      if (m) m.classList.remove('active');
+    }
+    function openLoginPopup() {
+      const m = document.getElementById('loginPopupModal');
+      if (m) m.classList.add('active');
+    }
+  </script>
+  {% endif %}
+</body>
+</html>

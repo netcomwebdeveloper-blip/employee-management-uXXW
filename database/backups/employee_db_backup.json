@@ -1,0 +1,1282 @@
+[
+{
+  "model": "auth.permission",
+  "pk": 1,
+  "fields": {
+    "name": "Can add log entry",
+    "content_type": 1,
+    "codename": "add_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 2,
+  "fields": {
+    "name": "Can change log entry",
+    "content_type": 1,
+    "codename": "change_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 3,
+  "fields": {
+    "name": "Can delete log entry",
+    "content_type": 1,
+    "codename": "delete_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 4,
+  "fields": {
+    "name": "Can view log entry",
+    "content_type": 1,
+    "codename": "view_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 5,
+  "fields": {
+    "name": "Can add permission",
+    "content_type": 2,
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 6,
+  "fields": {
+    "name": "Can change permission",
+    "content_type": 2,
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 7,
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": 2,
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 8,
+  "fields": {
+    "name": "Can view permission",
+    "content_type": 2,
+    "codename": "view_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 9,
+  "fields": {
+    "name": "Can add group",
+    "content_type": 3,
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 10,
+  "fields": {
+    "name": "Can change group",
+    "content_type": 3,
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 11,
+  "fields": {
+    "name": "Can delete group",
+    "content_type": 3,
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 12,
+  "fields": {
+    "name": "Can view group",
+    "content_type": 3,
+    "codename": "view_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 13,
+  "fields": {
+    "name": "Can add user",
+    "content_type": 4,
+    "codename": "add_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 14,
+  "fields": {
+    "name": "Can change user",
+    "content_type": 4,
+    "codename": "change_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 15,
+  "fields": {
+    "name": "Can delete user",
+    "content_type": 4,
+    "codename": "delete_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 16,
+  "fields": {
+    "name": "Can view user",
+    "content_type": 4,
+    "codename": "view_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 17,
+  "fields": {
+    "name": "Can add content type",
+    "content_type": 5,
+    "codename": "add_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 18,
+  "fields": {
+    "name": "Can change content type",
+    "content_type": 5,
+    "codename": "change_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 19,
+  "fields": {
+    "name": "Can delete content type",
+    "content_type": 5,
+    "codename": "delete_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 20,
+  "fields": {
+    "name": "Can view content type",
+    "content_type": 5,
+    "codename": "view_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 21,
+  "fields": {
+    "name": "Can add session",
+    "content_type": 6,
+    "codename": "add_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 22,
+  "fields": {
+    "name": "Can change session",
+    "content_type": 6,
+    "codename": "change_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 23,
+  "fields": {
+    "name": "Can delete session",
+    "content_type": 6,
+    "codename": "delete_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 24,
+  "fields": {
+    "name": "Can view session",
+    "content_type": 6,
+    "codename": "view_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 25,
+  "fields": {
+    "name": "Can add Department",
+    "content_type": 7,
+    "codename": "add_department"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 26,
+  "fields": {
+    "name": "Can change Department",
+    "content_type": 7,
+    "codename": "change_department"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 27,
+  "fields": {
+    "name": "Can delete Department",
+    "content_type": 7,
+    "codename": "delete_department"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 28,
+  "fields": {
+    "name": "Can view Department",
+    "content_type": 7,
+    "codename": "view_department"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 29,
+  "fields": {
+    "name": "Can add Designation",
+    "content_type": 8,
+    "codename": "add_designation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 30,
+  "fields": {
+    "name": "Can change Designation",
+    "content_type": 8,
+    "codename": "change_designation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 31,
+  "fields": {
+    "name": "Can delete Designation",
+    "content_type": 8,
+    "codename": "delete_designation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 32,
+  "fields": {
+    "name": "Can view Designation",
+    "content_type": 8,
+    "codename": "view_designation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 33,
+  "fields": {
+    "name": "Can add Employee",
+    "content_type": 9,
+    "codename": "add_employee"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 34,
+  "fields": {
+    "name": "Can change Employee",
+    "content_type": 9,
+    "codename": "change_employee"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 35,
+  "fields": {
+    "name": "Can delete Employee",
+    "content_type": 9,
+    "codename": "delete_employee"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 36,
+  "fields": {
+    "name": "Can view Employee",
+    "content_type": 9,
+    "codename": "view_employee"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 37,
+  "fields": {
+    "name": "Can add Daily Work",
+    "content_type": 10,
+    "codename": "add_dailywork"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 38,
+  "fields": {
+    "name": "Can change Daily Work",
+    "content_type": 10,
+    "codename": "change_dailywork"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 39,
+  "fields": {
+    "name": "Can delete Daily Work",
+    "content_type": 10,
+    "codename": "delete_dailywork"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 40,
+  "fields": {
+    "name": "Can view Daily Work",
+    "content_type": 10,
+    "codename": "view_dailywork"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 41,
+  "fields": {
+    "name": "Can add Attendance",
+    "content_type": 11,
+    "codename": "add_attendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 42,
+  "fields": {
+    "name": "Can change Attendance",
+    "content_type": 11,
+    "codename": "change_attendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 43,
+  "fields": {
+    "name": "Can delete Attendance",
+    "content_type": 11,
+    "codename": "delete_attendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 44,
+  "fields": {
+    "name": "Can view Attendance",
+    "content_type": 11,
+    "codename": "view_attendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 45,
+  "fields": {
+    "name": "Can add Leave Request",
+    "content_type": 12,
+    "codename": "add_leaverequest"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 46,
+  "fields": {
+    "name": "Can change Leave Request",
+    "content_type": 12,
+    "codename": "change_leaverequest"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 47,
+  "fields": {
+    "name": "Can delete Leave Request",
+    "content_type": 12,
+    "codename": "delete_leaverequest"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 48,
+  "fields": {
+    "name": "Can view Leave Request",
+    "content_type": 12,
+    "codename": "view_leaverequest"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 49,
+  "fields": {
+    "name": "Can add Monthly Leave Credit",
+    "content_type": 13,
+    "codename": "add_monthlyleavecredit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 50,
+  "fields": {
+    "name": "Can change Monthly Leave Credit",
+    "content_type": 13,
+    "codename": "change_monthlyleavecredit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 51,
+  "fields": {
+    "name": "Can delete Monthly Leave Credit",
+    "content_type": 13,
+    "codename": "delete_monthlyleavecredit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 52,
+  "fields": {
+    "name": "Can view Monthly Leave Credit",
+    "content_type": 13,
+    "codename": "view_monthlyleavecredit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 53,
+  "fields": {
+    "name": "Can add salary structure",
+    "content_type": 14,
+    "codename": "add_salarystructure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 54,
+  "fields": {
+    "name": "Can change salary structure",
+    "content_type": 14,
+    "codename": "change_salarystructure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 55,
+  "fields": {
+    "name": "Can delete salary structure",
+    "content_type": 14,
+    "codename": "delete_salarystructure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 56,
+  "fields": {
+    "name": "Can view salary structure",
+    "content_type": 14,
+    "codename": "view_salarystructure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 57,
+  "fields": {
+    "name": "Can add Payroll Record",
+    "content_type": 15,
+    "codename": "add_payrollrecord"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 58,
+  "fields": {
+    "name": "Can change Payroll Record",
+    "content_type": 15,
+    "codename": "change_payrollrecord"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 59,
+  "fields": {
+    "name": "Can delete Payroll Record",
+    "content_type": 15,
+    "codename": "delete_payrollrecord"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 60,
+  "fields": {
+    "name": "Can view Payroll Record",
+    "content_type": 15,
+    "codename": "view_payrollrecord"
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$z6YHVGM19BH2b79m7ty1bJ$D8r2MFKFPMqpppQS9t84QfEcfBdfU+7GP5djvoq7GJc=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "NETCOM",
+    "first_name": "NETCOM",
+    "last_name": "Administrator",
+    "email": "admin@netcom.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-10-12T07:31:25.516Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$cCDeIKlo8thssWYBFju8FN$kpXu0q5RWx1n0SA4wZ/Pv74ggnIxgPGEq2Yxs7bF4yg=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "hr",
+    "first_name": "HR",
+    "last_name": "Manager",
+    "email": "hr@example.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-12T07:31:25.793Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$IUptwbXnUVPvOgtawcCy1z$e517Fd9KXk1jg2XorylMDoN1rOzIRDepS0POuqmIB5A=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "emp",
+    "first_name": "Mathan",
+    "last_name": "M",
+    "email": "emp@example.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-12T07:31:25.797Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$i4i6JqjzCPFVHlzKR5AkdK$bGB8kl+SquAW/k5Bpen/p5H5An0M+UhQaXPKtpkssWk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "08092003",
+    "first_name": "Mathan",
+    "last_name": "M",
+    "email": "mathan003m@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-12T07:31:25.802Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 1,
+  "fields": {
+    "app_label": "admin",
+    "model": "logentry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 2,
+  "fields": {
+    "app_label": "auth",
+    "model": "permission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 3,
+  "fields": {
+    "app_label": "auth",
+    "model": "group"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 4,
+  "fields": {
+    "app_label": "auth",
+    "model": "user"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 5,
+  "fields": {
+    "app_label": "contenttypes",
+    "model": "contenttype"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 6,
+  "fields": {
+    "app_label": "sessions",
+    "model": "session"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 7,
+  "fields": {
+    "app_label": "departments",
+    "model": "department"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 8,
+  "fields": {
+    "app_label": "departments",
+    "model": "designation"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 9,
+  "fields": {
+    "app_label": "employees",
+    "model": "employee"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 10,
+  "fields": {
+    "app_label": "attendance",
+    "model": "dailywork"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 11,
+  "fields": {
+    "app_label": "attendance",
+    "model": "attendance"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 12,
+  "fields": {
+    "app_label": "leave_management",
+    "model": "leaverequest"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 13,
+  "fields": {
+    "app_label": "leave_management",
+    "model": "monthlyleavecredit"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 14,
+  "fields": {
+    "app_label": "payroll",
+    "model": "salarystructure"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 15,
+  "fields": {
+    "app_label": "payroll",
+    "model": "payrollrecord"
+  }
+},
+{
+  "model": "departments.department",
+  "pk": 1,
+  "fields": {
+    "name": "Management",
+    "code": "MGT",
+    "description": "Executive and Administrative Leadership",
+    "created_at": "2026-10-12T07:31:25.504Z"
+  }
+},
+{
+  "model": "departments.department",
+  "pk": 2,
+  "fields": {
+    "name": "Human Resource",
+    "code": "HR",
+    "description": "People Operations & Talent",
+    "created_at": "2026-10-12T07:31:25.506Z"
+  }
+},
+{
+  "model": "departments.department",
+  "pk": 3,
+  "fields": {
+    "name": "IT",
+    "code": "IT",
+    "description": "Software Development & Systems",
+    "created_at": "2026-10-12T07:31:25.509Z"
+  }
+},
+{
+  "model": "departments.department",
+  "pk": 4,
+  "fields": {
+    "name": "Administration",
+    "code": "ADM",
+    "description": "General Administration & Facilities",
+    "created_at": "2026-10-12T07:31:25.510Z"
+  }
+},
+{
+  "model": "departments.department",
+  "pk": 5,
+  "fields": {
+    "name": "developer",
+    "code": "DEV",
+    "description": "developer Department",
+    "created_at": "2026-10-12T07:31:26.350Z"
+  }
+},
+{
+  "model": "departments.designation",
+  "pk": 1,
+  "fields": {
+    "department": 1,
+    "title": "System Admin",
+    "description": ""
+  }
+},
+{
+  "model": "departments.designation",
+  "pk": 2,
+  "fields": {
+    "department": 2,
+    "title": "HR Manager",
+    "description": ""
+  }
+},
+{
+  "model": "departments.designation",
+  "pk": 3,
+  "fields": {
+    "department": 3,
+    "title": "Frontend Developer",
+    "description": ""
+  }
+},
+{
+  "model": "departments.designation",
+  "pk": 4,
+  "fields": {
+    "department": 5,
+    "title": "developer",
+    "description": ""
+  }
+},
+{
+  "model": "employees.employee",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "employee_code": "ADM001",
+    "role": "ADMIN",
+    "department": 1,
+    "designation": 1,
+    "phone": "9876543200",
+    "address": "Tamil Nadu",
+    "joining_date": "2026-06-19",
+    "basic_salary": "60000.00",
+    "casual_leave_balance": 2,
+    "profile_picture": "",
+    "document": "",
+    "is_active_employee": true,
+    "created_at": "2026-10-12T07:31:26.330Z",
+    "updated_at": "2026-10-12T07:32:08.211Z"
+  }
+},
+{
+  "model": "employees.employee",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "employee_code": "HR001",
+    "role": "HR",
+    "department": 2,
+    "designation": 2,
+    "phone": "9876543210",
+    "address": "Tamil Nadu",
+    "joining_date": "2026-06-19",
+    "basic_salary": "60000.00",
+    "casual_leave_balance": 2,
+    "profile_picture": "",
+    "document": "",
+    "is_active_employee": true,
+    "created_at": "2026-10-12T07:31:26.338Z",
+    "updated_at": "2026-10-12T07:32:08.214Z"
+  }
+},
+{
+  "model": "employees.employee",
+  "pk": 3,
+  "fields": {
+    "user": 3,
+    "employee_code": "EMP001",
+    "role": "EMPLOYEE",
+    "department": 3,
+    "designation": 3,
+    "phone": "9876543211",
+    "address": "Tamil Nadu",
+    "joining_date": "2026-06-19",
+    "basic_salary": "35000.00",
+    "casual_leave_balance": 0,
+    "profile_picture": "",
+    "document": "",
+    "is_active_employee": true,
+    "created_at": "2026-10-12T07:31:26.345Z",
+    "updated_at": "2026-10-12T07:32:08.218Z"
+  }
+},
+{
+  "model": "employees.employee",
+  "pk": 4,
+  "fields": {
+    "user": 4,
+    "employee_code": "1233456",
+    "role": "EMPLOYEE",
+    "department": 5,
+    "designation": 4,
+    "phone": "54661464564",
+    "address": "68476416416",
+    "joining_date": "2026-06-19",
+    "basic_salary": "35000.00",
+    "casual_leave_balance": 2,
+    "profile_picture": "",
+    "document": "",
+    "is_active_employee": true,
+    "created_at": "2026-10-12T07:31:26.356Z",
+    "updated_at": "2026-10-12T07:32:08.223Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 1,
+  "fields": {
+    "employee": 3,
+    "date": "2026-06-19",
+    "in_time": "09:57:54.110",
+    "out_time": "10:30:25.620",
+    "status": "Present",
+    "updated_by": null,
+    "update_source": "Employee Punch",
+    "created_at": "2026-10-12T07:31:26.364Z",
+    "updated_at": "2026-10-12T07:31:26.364Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 2,
+  "fields": {
+    "employee": 1,
+    "date": "2026-06-19",
+    "in_time": "11:29:37.953",
+    "out_time": "11:29:39.836",
+    "status": "Present",
+    "updated_by": null,
+    "update_source": "HR Punch",
+    "created_at": "2026-10-12T07:31:26.366Z",
+    "updated_at": "2026-10-12T07:31:26.366Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 3,
+  "fields": {
+    "employee": 2,
+    "date": "2026-06-19",
+    "in_time": null,
+    "out_time": null,
+    "status": "Absent",
+    "updated_by": null,
+    "update_source": "Manual",
+    "created_at": "2026-10-12T07:31:26.369Z",
+    "updated_at": "2026-10-12T07:31:26.369Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 4,
+  "fields": {
+    "employee": 2,
+    "date": "2026-10-12",
+    "in_time": "12:02:38.089",
+    "out_time": "12:02:38.218",
+    "status": "Present",
+    "updated_by": null,
+    "update_source": "HR Punch",
+    "created_at": "2026-10-12T07:31:26.371Z",
+    "updated_at": "2026-10-12T07:31:26.371Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 5,
+  "fields": {
+    "employee": 3,
+    "date": "2026-10-12",
+    "in_time": "12:02:20.559",
+    "out_time": "12:02:20.684",
+    "status": "Present",
+    "updated_by": null,
+    "update_source": "Employee Punch",
+    "created_at": "2026-10-12T07:31:26.374Z",
+    "updated_at": "2026-10-12T07:31:26.374Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 6,
+  "fields": {
+    "employee": 3,
+    "date": "2026-06-18",
+    "in_time": "09:30:00",
+    "out_time": "18:15:00",
+    "status": "Present",
+    "updated_by": null,
+    "update_source": "Punch Machine CSV",
+    "created_at": "2026-10-12T07:31:26.376Z",
+    "updated_at": "2026-10-12T07:31:26.376Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 7,
+  "fields": {
+    "employee": 2,
+    "date": "2026-06-18",
+    "in_time": "09:45:00",
+    "out_time": "18:30:00",
+    "status": "Present",
+    "updated_by": null,
+    "update_source": "Punch Machine CSV",
+    "created_at": "2026-10-12T07:31:26.380Z",
+    "updated_at": "2026-10-12T07:31:26.380Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 8,
+  "fields": {
+    "employee": 1,
+    "date": "2026-10-12",
+    "in_time": null,
+    "out_time": null,
+    "status": "Absent",
+    "updated_by": null,
+    "update_source": "Manual",
+    "created_at": "2026-10-12T07:31:26.381Z",
+    "updated_at": "2026-10-12T07:31:26.382Z"
+  }
+},
+{
+  "model": "attendance.dailywork",
+  "pk": 1,
+  "fields": {
+    "employee": 3,
+    "date": "2026-06-19",
+    "project_name": "emp",
+    "work_details": "fuhhdfgfg",
+    "status": "In Progress",
+    "created_at": "2026-10-12T07:31:26.384Z"
+  }
+},
+{
+  "model": "attendance.dailywork",
+  "pk": 2,
+  "fields": {
+    "employee": 3,
+    "date": "2026-10-12",
+    "project_name": "Test Project",
+    "work_details": "Tested views and features",
+    "status": "Completed",
+    "created_at": "2026-10-12T07:31:26.387Z"
+  }
+},
+{
+  "model": "leave_management.leaverequest",
+  "pk": 1,
+  "fields": {
+    "employee": 3,
+    "leave_type": "Casual Leave",
+    "from_date": "2026-06-20",
+    "to_date": "2026-06-20",
+    "total_days": 1,
+    "reason": "no resion",
+    "status": "Rejected",
+    "applied_on": "2026-10-12T07:31:42.857Z",
+    "reviewed_by": null,
+    "rejection_reason": ""
+  }
+},
+{
+  "model": "leave_management.leaverequest",
+  "pk": 2,
+  "fields": {
+    "employee": 3,
+    "leave_type": "Casual Leave",
+    "from_date": "2026-06-20",
+    "to_date": "2026-06-20",
+    "total_days": 1,
+    "reason": "no",
+    "status": "Approved",
+    "applied_on": "2026-10-12T07:31:42.859Z",
+    "reviewed_by": null,
+    "rejection_reason": ""
+  }
+},
+{
+  "model": "leave_management.leaverequest",
+  "pk": 3,
+  "fields": {
+    "employee": 3,
+    "leave_type": "Casual Leave",
+    "from_date": "2026-10-15",
+    "to_date": "2026-10-15",
+    "total_days": 1,
+    "reason": "Personal work",
+    "status": "Approved",
+    "applied_on": "2026-10-12T07:31:42.863Z",
+    "reviewed_by": null,
+    "rejection_reason": ""
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 1,
+  "fields": {
+    "employee": 3,
+    "year": 2026,
+    "month": 6,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.866Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 2,
+  "fields": {
+    "employee": 1,
+    "year": 2026,
+    "month": 6,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.868Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 3,
+  "fields": {
+    "employee": 2,
+    "year": 2026,
+    "month": 6,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.870Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 4,
+  "fields": {
+    "employee": 1,
+    "year": 2026,
+    "month": 10,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.871Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 5,
+  "fields": {
+    "employee": 2,
+    "year": 2026,
+    "month": 10,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.874Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 6,
+  "fields": {
+    "employee": 3,
+    "year": 2026,
+    "month": 10,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.876Z"
+  }
+},
+{
+  "model": "payroll.salarystructure",
+  "pk": 1,
+  "fields": {
+    "employee": 1,
+    "basic_salary": "60000.00",
+    "hra": "8000.00",
+    "allowances": "4000.00",
+    "pf_deduction": "1800.00",
+    "tax_deduction": "1200.00",
+    "updated_at": "2026-10-12T07:31:26.333Z"
+  }
+},
+{
+  "model": "payroll.salarystructure",
+  "pk": 2,
+  "fields": {
+    "employee": 2,
+    "basic_salary": "60000.00",
+    "hra": "8000.00",
+    "allowances": "4000.00",
+    "pf_deduction": "1800.00",
+    "tax_deduction": "1200.00",
+    "updated_at": "2026-10-12T07:31:26.341Z"
+  }
+},
+{
+  "model": "payroll.salarystructure",
+  "pk": 3,
+  "fields": {
+    "employee": 3,
+    "basic_salary": "35000.00",
+    "hra": "8000.00",
+    "allowances": "4000.00",
+    "pf_deduction": "1800.00",
+    "tax_deduction": "1200.00",
+    "updated_at": "2026-10-12T07:31:26.348Z"
+  }
+},
+{
+  "model": "payroll.salarystructure",
+  "pk": 4,
+  "fields": {
+    "employee": 4,
+    "basic_salary": "35000.00",
+    "hra": "8000.00",
+    "allowances": "4000.00",
+    "pf_deduction": "1800.00",
+    "tax_deduction": "1200.00",
+    "updated_at": "2026-10-12T07:31:26.358Z"
+  }
+},
+{
+  "model": "payroll.payrollrecord",
+  "pk": 1,
+  "fields": {
+    "employee": 4,
+    "year": 2026,
+    "month": 10,
+    "basic_salary": "35000.00",
+    "allowances": "12000.00",
+    "deductions": "3000.00",
+    "net_salary": "44000.00",
+    "status": "Pending",
+    "payment_date": null,
+    "remarks": "",
+    "created_at": "2026-10-12T07:31:42.881Z"
+  }
+},
+{
+  "model": "payroll.payrollrecord",
+  "pk": 2,
+  "fields": {
+    "employee": 1,
+    "year": 2026,
+    "month": 10,
+    "basic_salary": "60000.00",
+    "allowances": "12000.00",
+    "deductions": "3000.00",
+    "net_salary": "69000.00",
+    "status": "Paid",
+    "payment_date": "2026-10-12",
+    "remarks": "",
+    "created_at": "2026-10-12T07:31:42.886Z"
+  }
+},
+{
+  "model": "payroll.payrollrecord",
+  "pk": 3,
+  "fields": {
+    "employee": 3,
+    "year": 2026,
+    "month": 10,
+    "basic_salary": "35000.00",
+    "allowances": "12000.00",
+    "deductions": "3000.00",
+    "net_salary": "44000.00",
+    "status": "Pending",
+    "payment_date": null,
+    "remarks": "",
+    "created_at": "2026-10-12T07:31:42.889Z"
+  }
+},
+{
+  "model": "payroll.payrollrecord",
+  "pk": 4,
+  "fields": {
+    "employee": 2,
+    "year": 2026,
+    "month": 10,
+    "basic_salary": "60000.00",
+    "allowances": "12000.00",
+    "deductions": "3000.00",
+    "net_salary": "69000.00",
+    "status": "Pending",
+    "payment_date": null,
+    "remarks": "",
+    "created_at": "2026-10-12T07:31:42.892Z"
+  }
+}
+]

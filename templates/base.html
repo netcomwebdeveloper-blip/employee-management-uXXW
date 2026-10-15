@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}NETCOM Employee Management Portal{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Collapsible Responsive Sidebar -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-brand" style="display: flex; align-items: center; gap: 10px;">
+        <img src="{% static 'images/netcom_logo.png' %}" alt="Netcom Logo" class="sidebar-logo-img">
+        <div class="brand-text">
+          <h2 style="font-size: 13px; font-weight: 700; margin: 0; line-height: 1.25; color: #fff;">Netcom Computers Pvt Ltd</h2>
+        </div>
+      </div>
+
+      <nav class="sidebar-menu">
+        <div class="nav-label">Core Navigation</div>
+        <a href="{% url 'dashboard:index' %}" class="nav-link {% if request.resolver_match.app_name == 'dashboard' and request.resolver_match.url_name != 'hr_dashboard' %}active{% endif %}">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        {% if current_profile.role == 'ADMIN' or request.user.is_superuser %}
+        <a href="{% url 'dashboard:hr_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'hr_dashboard' %}active{% endif %}">
+          <span class="nav-icon">👔</span>
+          <span>HR Operations</span>
+        </a>
+        {% endif %}
+
+        {% if current_profile.role == 'ADMIN' or current_profile.role == 'HR' or request.user.is_superuser %}
+        <a href="{% url 'employees:list' %}" class="nav-link {% if request.resolver_match.app_name == 'employees' %}active{% endif %}">
+          <span class="nav-icon">👥</span>
+          <span>Employees</span>
+        </a>
+        <a href="{% url 'departments:list' %}" class="nav-link {% if request.resolver_match.app_name == 'departments' %}active{% endif %}">
+          <span class="nav-icon">🏢</span>
+          <span>Departments</span>
+        </a>
+
+        <div class="nav-label">Time & Leave</div>
+        <a href="{% url 'attendance:list' %}" class="nav-link {% if request.resolver_match.app_name == 'attendance' and request.resolver_match.url_name == 'list' %}active{% endif %}">
+          <span class="nav-icon">⏱️</span>
+          <span>Attendance</span>
+        </a>
+        <a href="{% url 'attendance:daily_work' %}" class="nav-link {% if request.resolver_match.url_name == 'daily_work' %}active{% endif %}">
+          <span class="nav-icon">📝</span>
+          <span>Daily Work</span>
+        </a>
+        <a href="{% url 'leave_management:list' %}" class="nav-link {% if request.resolver_match.app_name == 'leave_management' %}active{% endif %}">
+          <span class="nav-icon">📅</span>
+          <span>Leave Requests</span>
+        </a>
+
+        <div class="nav-label">Finance & Analytics</div>
+        <a href="{% url 'payroll:list' %}" class="nav-link {% if request.resolver_match.app_name == 'payroll' %}active{% endif %}">
+          <span class="nav-icon">💳</span>
+          <span>Payroll</span>
+        </a>
+        <a href="{% url 'reports:index' %}" class="nav-link {% if request.resolver_match.app_name == 'reports' %}active{% endif %}">
+          <span class="nav-icon">📈</span>
+          <span>Reports</span>
+        </a>
+        {% endif %}
+
+        {% if request.user.is_superuser or current_profile.role == 'ADMIN' %}
+        <div class="nav-label">System Control</div>
+        <a href="/django-admin/" class="nav-link" target="_blank">
+          <span class="nav-icon">⚙️</span>
+          <span>Django Admin</span>
+        </a>
+        {% endif %}
+      </nav>
+
+      <!-- Sidebar User Badge -->
+      <div class="sidebar-user">
+        <div class="user-avatar" style="overflow: hidden; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;">
+          {% if current_profile and current_profile.profile_picture %}
+          <img src="{{ current_profile.profile_picture.url }}" alt="{{ request.user.username }}" style="width: 100%; height: 100%; object-fit: cover;">
+          {% else %}
+          {{ request.user.username|make_list|first|upper }}
+          {% endif %}
+        </div>
+        <div class="user-info">
+          <div class="user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+          <span class="user-role-badge">{{ current_profile.role|default:"User" }}</span>
+        </div>
+        <a href="{% url 'logout' %}" title="Logout" style="color: #ef4444; text-decoration: none; font-size: 18px;">
+          🚪
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <header class="top-bar">
+        <div class="top-bar-left" style="display: flex; align-items: center; gap: 10px;">
+          <button class="toggle-sidebar-btn" id="sidebarToggleBtn" aria-label="Toggle navigation">
+            ☰
+          </button>
+          <button type="button" class="back-nav-btn" onclick="window.history.back()" title="Go back to previous page">
+            ⬅ Back
+          </button>
+          <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+        </div>
+
+        <div class="top-bar-right">
+          {% if active_popup and active_popup.image %}
+          <button type="button" class="btn btn-outline btn-sm" onclick="openGlobalAnnouncementModal()" title="View Announcement Popup" style="display: inline-flex; align-items: center; gap: 4px; border-color: #3b82f6; color: #2563eb;">
+            📢 Announcement
+          </button>
+          {% endif %}
+          <div class="live-time-display" id="liveClockDisplay">
+            Loading time...
+          </div>
+          <a href="{% url 'users:profile' %}" class="btn btn-outline btn-sm">
+            👤 My Account
+          </a>
+          <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">
+            Logout
+          </a>
+        </div>
+      </header>
+
+      <main class="content-body">
+        <!-- Notification Messages -->
+        {% if messages %}
+        <div class="alert-container">
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags|default:'info' }}">
+            <span>{{ message }}</span>
+            <button type="button" class="alert-close" style="background:none; border:none; cursor:pointer; font-size:16px; margin-left: 10px;">&times;</button>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  {% if active_popup and active_popup.image %}
+  <!-- Global Announcement Popup Modal (Displays on login & dashboards, persists on refresh) -->
+  <div class="announcement-popup-overlay active" id="globalAnnouncementModal">
+    <div class="announcement-popup-card">
+      <div class="announcement-popup-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 18px;">📢</span>
+          <h3 style="margin: 0; font-size: 16px; color: var(--dark); font-weight: 700;">{{ active_popup.title|default:"Netcom Corporate Announcement" }}</h3>
+        </div>
+        <button type="button" class="modal-close" onclick="closeGlobalAnnouncementModal()" title="Close">&times;</button>
+      </div>
+      <div class="announcement-popup-body">
+        <img src="{{ active_popup.image.url }}" alt="{{ active_popup.title }}" class="announcement-popup-img">
+        {% if active_popup.description %}
+        <p style="margin-top: 14px; font-size: 13.5px; color: var(--gray-700); line-height: 1.5; text-align: left;">
+          {{ active_popup.description }}
+        </p>
+        {% endif %}
+      </div>
+      <div style="padding: 12px 20px; background: #f8fafc; border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="closeGlobalAnnouncementModal()">
+          Close Announcement
+        </button>
+      </div>
+    </div>
+  </div>
+  <script>
+    function closeGlobalAnnouncementModal() {
+      const modal = document.getElementById('globalAnnouncementModal');
+      if (modal) modal.classList.remove('active');
+    }
+    function openGlobalAnnouncementModal() {
+      const modal = document.getElementById('globalAnnouncementModal');
+      if (modal) modal.classList.add('active');
+    }
+  </script>
+  {% endif %}
+
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

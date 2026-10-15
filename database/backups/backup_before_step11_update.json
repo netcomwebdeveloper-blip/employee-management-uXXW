@@ -1,0 +1,1032 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$720000$z6YHVGM19BH2b79m7ty1bJ$D8r2MFKFPMqpppQS9t84QfEcfBdfU+7GP5djvoq7GJc=",
+    "last_login": "2026-10-12T10:13:57.095Z",
+    "is_superuser": true,
+    "username": "NETCOM",
+    "first_name": "NETCOM",
+    "last_name": "Administrator",
+    "email": "admin@netcom.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-10-12T07:31:25.516Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$720000$cCDeIKlo8thssWYBFju8FN$kpXu0q5RWx1n0SA4wZ/Pv74ggnIxgPGEq2Yxs7bF4yg=",
+    "last_login": "2026-10-12T11:15:40.377Z",
+    "is_superuser": false,
+    "username": "hr",
+    "first_name": "HR",
+    "last_name": "Manager",
+    "email": "hr@example.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-12T07:31:25.793Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$720000$IUptwbXnUVPvOgtawcCy1z$e517Fd9KXk1jg2XorylMDoN1rOzIRDepS0POuqmIB5A=",
+    "last_login": "2026-10-12T10:58:43.196Z",
+    "is_superuser": false,
+    "username": "emp",
+    "first_name": "Mathan",
+    "last_name": "M",
+    "email": "emp@example.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-12T07:31:25.797Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$720000$i4i6JqjzCPFVHlzKR5AkdK$bGB8kl+SquAW/k5Bpen/p5H5An0M+UhQaXPKtpkssWk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "08092003",
+    "first_name": "Mathan",
+    "last_name": "M",
+    "email": "mathan003m@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-12T07:31:25.802Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$720000$IT8XE53o3DPdRRl1eNpgfQ$N6bsLVdYXktGauLV6ohCCZXE5/9KgIBH5aSHMnJgkyQ=",
+    "last_login": "2026-10-12T11:10:44.926Z",
+    "is_superuser": false,
+    "username": "emp1",
+    "first_name": "Goutham",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-12T11:10:36.029Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$720000$8zLNewNgARaJCG7KknPr9F$CvNZ5rJ6o9L7ijX1BYeztOSdjMPLIidGUvsY9JT/9BI=",
+    "last_login": "2026-10-12T11:15:05.415Z",
+    "is_superuser": true,
+    "username": "emp2",
+    "first_name": "Goutham",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-10-12T11:14:59.186Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "hxah2om3431mielp7jlpa4x8mktbdb2j",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWmcdoYWl-45QzPDtIIaSCisjHdXEha6_e-9_zKJt3VIW81LGtVcjDOn3024f-RpB3rn6Tbbfp7WZRS7K_ag1Xaz5uf1cP8OBq7Dt_YRUZQdtCGKZ0EKJfSCuXWkGBtfzkgiDQFoLESRoQh6CERA3ql5fwDSUjcV:1xGDHz:XCliBQ6FfHEpsQzXRiUf47VeEMKUrgvBiwwzpkwpPsU",
+    "expire_date": "2026-10-26T10:29:51.249Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "m1bg2fj8jtq173dz1pqgrwlxsrk2tzqu",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWmcdoYWl-45QzPDtIIaSCisjHdXEha6_e-9_zKJt3VIW81LGtVcjDOn3024f-RpB3rn6Tbbfp7WZRS7K_ag1Xaz5uf1cP8OBq7Dt_YRUZQdtCGKZ0EKJfSCuXWkGBtfzkgiDQFoLESRoQh6CERA3ql5fwDSUjcV:1xGE0K:yIT6933kADtqz-3ptVbw9G0ci3O26fi2O9icPZ-Ugvw",
+    "expire_date": "2026-10-26T11:15:40.381Z"
+  }
+},
+{
+  "model": "departments.department",
+  "pk": 1,
+  "fields": {
+    "name": "Management",
+    "code": "MGT",
+    "description": "Executive and Administrative Leadership",
+    "created_at": "2026-10-12T07:31:25.504Z"
+  }
+},
+{
+  "model": "departments.department",
+  "pk": 2,
+  "fields": {
+    "name": "Human Resource",
+    "code": "HR",
+    "description": "People Operations & Talent",
+    "created_at": "2026-10-12T07:31:25.506Z"
+  }
+},
+{
+  "model": "departments.department",
+  "pk": 3,
+  "fields": {
+    "name": "IT",
+    "code": "IT",
+    "description": "Software Development & Systems",
+    "created_at": "2026-10-12T07:31:25.509Z"
+  }
+},
+{
+  "model": "departments.department",
+  "pk": 4,
+  "fields": {
+    "name": "Administration",
+    "code": "ADM",
+    "description": "General Administration & Facilities",
+    "created_at": "2026-10-12T07:31:25.510Z"
+  }
+},
+{
+  "model": "departments.department",
+  "pk": 5,
+  "fields": {
+    "name": "developer",
+    "code": "DEV",
+    "description": "developer Department",
+    "created_at": "2026-10-12T07:31:26.350Z"
+  }
+},
+{
+  "model": "departments.designation",
+  "pk": 1,
+  "fields": {
+    "department": 1,
+    "title": "System Admin",
+    "description": ""
+  }
+},
+{
+  "model": "departments.designation",
+  "pk": 2,
+  "fields": {
+    "department": 2,
+    "title": "HR Manager",
+    "description": ""
+  }
+},
+{
+  "model": "departments.designation",
+  "pk": 3,
+  "fields": {
+    "department": 3,
+    "title": "Frontend Developer",
+    "description": ""
+  }
+},
+{
+  "model": "departments.designation",
+  "pk": 4,
+  "fields": {
+    "department": 5,
+    "title": "developer",
+    "description": ""
+  }
+},
+{
+  "model": "employees.employee",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "NETCOM"
+    ],
+    "employee_code": "ADM001",
+    "role": "ADMIN",
+    "department": 1,
+    "designation": 1,
+    "phone": "9876543200",
+    "address": "Tamil Nadu",
+    "joining_date": "2026-06-19",
+    "basic_salary": "60000.00",
+    "casual_leave_balance": 1,
+    "profile_picture": "",
+    "document": "",
+    "is_active_employee": true,
+    "created_at": "2026-10-12T07:31:26.330Z",
+    "updated_at": "2026-10-12T07:32:08.211Z"
+  }
+},
+{
+  "model": "employees.employee",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "hr"
+    ],
+    "employee_code": "HR001",
+    "role": "HR",
+    "department": 2,
+    "designation": 2,
+    "phone": "9876543210",
+    "address": "Tamil Nadu",
+    "joining_date": "2026-06-19",
+    "basic_salary": "60000.00",
+    "casual_leave_balance": 1,
+    "profile_picture": "",
+    "document": "",
+    "is_active_employee": true,
+    "created_at": "2026-10-12T07:31:26.338Z",
+    "updated_at": "2026-10-12T07:32:08.214Z"
+  }
+},
+{
+  "model": "employees.employee",
+  "pk": 3,
+  "fields": {
+    "user": [
+      "emp"
+    ],
+    "employee_code": "EMP001",
+    "role": "EMPLOYEE",
+    "department": 3,
+    "designation": 3,
+    "phone": "9876543211",
+    "address": "Tamil Nadu",
+    "joining_date": "2026-06-19",
+    "basic_salary": "35000.00",
+    "casual_leave_balance": 0,
+    "profile_picture": "",
+    "document": "",
+    "is_active_employee": true,
+    "created_at": "2026-10-12T07:31:26.345Z",
+    "updated_at": "2026-10-12T07:32:08.218Z"
+  }
+},
+{
+  "model": "employees.employee",
+  "pk": 4,
+  "fields": {
+    "user": [
+      "08092003"
+    ],
+    "employee_code": "1233456",
+    "role": "EMPLOYEE",
+    "department": 5,
+    "designation": 4,
+    "phone": "54661464564",
+    "address": "68476416416",
+    "joining_date": "2026-06-19",
+    "basic_salary": "35000.00",
+    "casual_leave_balance": 1,
+    "profile_picture": "",
+    "document": "",
+    "is_active_employee": true,
+    "created_at": "2026-10-12T07:31:26.356Z",
+    "updated_at": "2026-10-12T07:32:08.223Z"
+  }
+},
+{
+  "model": "employees.employee",
+  "pk": 5,
+  "fields": {
+    "user": [
+      "emp1"
+    ],
+    "employee_code": "202612",
+    "role": "HR",
+    "department": null,
+    "designation": 4,
+    "phone": "+91 63693 58582",
+    "address": "",
+    "joining_date": "2026-10-12",
+    "basic_salary": "15000.00",
+    "casual_leave_balance": 1,
+    "profile_picture": "employee_documents/386984146_73cf8ac6-31c7-448b-aa3b-0840d9b313a7.jpg",
+    "document": "",
+    "is_active_employee": true,
+    "created_at": "2026-10-12T11:10:36.449Z",
+    "updated_at": "2026-10-12T11:10:36.449Z"
+  }
+},
+{
+  "model": "employees.employee",
+  "pk": 6,
+  "fields": {
+    "user": [
+      "emp2"
+    ],
+    "employee_code": "202613",
+    "role": "ADMIN",
+    "department": 3,
+    "designation": null,
+    "phone": "+91 63693 58582",
+    "address": "",
+    "joining_date": "2026-10-12",
+    "basic_salary": "15000.00",
+    "casual_leave_balance": 1,
+    "profile_picture": "employee_documents/386984146_73cf8ac6-31c7-448b-aa3b-0840d9b313a7_IQTO1Aa.jpg",
+    "document": "",
+    "is_active_employee": true,
+    "created_at": "2026-10-12T11:14:59.743Z",
+    "updated_at": "2026-10-12T11:14:59.743Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 1,
+  "fields": {
+    "employee": 3,
+    "date": "2026-06-19",
+    "in_time": "09:57:54.110",
+    "out_time": "10:30:25.620",
+    "status": "Present",
+    "is_permission": false,
+    "permission_hours": "0.00",
+    "is_approved_leave": false,
+    "leave_type": "",
+    "leave_reason": "",
+    "updated_by": null,
+    "update_source": "Employee Punch",
+    "in_photo": "",
+    "out_photo": "",
+    "in_latitude": null,
+    "in_longitude": null,
+    "out_latitude": null,
+    "out_longitude": null,
+    "in_location": "",
+    "out_location": "",
+    "created_at": "2026-10-12T07:31:26.364Z",
+    "updated_at": "2026-10-12T07:31:26.364Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 2,
+  "fields": {
+    "employee": 1,
+    "date": "2026-06-19",
+    "in_time": "11:29:37.953",
+    "out_time": "11:29:39.836",
+    "status": "Present",
+    "is_permission": false,
+    "permission_hours": "0.00",
+    "is_approved_leave": false,
+    "leave_type": "",
+    "leave_reason": "",
+    "updated_by": null,
+    "update_source": "HR Punch",
+    "in_photo": "",
+    "out_photo": "",
+    "in_latitude": null,
+    "in_longitude": null,
+    "out_latitude": null,
+    "out_longitude": null,
+    "in_location": "",
+    "out_location": "",
+    "created_at": "2026-10-12T07:31:26.366Z",
+    "updated_at": "2026-10-12T07:31:26.366Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 3,
+  "fields": {
+    "employee": 2,
+    "date": "2026-06-19",
+    "in_time": null,
+    "out_time": null,
+    "status": "Absent",
+    "is_permission": false,
+    "permission_hours": "0.00",
+    "is_approved_leave": false,
+    "leave_type": "",
+    "leave_reason": "",
+    "updated_by": null,
+    "update_source": "Manual",
+    "in_photo": "",
+    "out_photo": "",
+    "in_latitude": null,
+    "in_longitude": null,
+    "out_latitude": null,
+    "out_longitude": null,
+    "in_location": "",
+    "out_location": "",
+    "created_at": "2026-10-12T07:31:26.369Z",
+    "updated_at": "2026-10-12T07:31:26.369Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 4,
+  "fields": {
+    "employee": 2,
+    "date": "2026-10-12",
+    "in_time": "12:02:38.089",
+    "out_time": "12:02:38.218",
+    "status": "Present",
+    "is_permission": false,
+    "permission_hours": "0.00",
+    "is_approved_leave": false,
+    "leave_type": "",
+    "leave_reason": "",
+    "updated_by": null,
+    "update_source": "HR Punch",
+    "in_photo": "",
+    "out_photo": "",
+    "in_latitude": null,
+    "in_longitude": null,
+    "out_latitude": null,
+    "out_longitude": null,
+    "in_location": "",
+    "out_location": "",
+    "created_at": "2026-10-12T07:31:26.371Z",
+    "updated_at": "2026-10-12T07:31:26.371Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 5,
+  "fields": {
+    "employee": 3,
+    "date": "2026-10-12",
+    "in_time": "12:02:20.559",
+    "out_time": "12:02:20.684",
+    "status": "Present",
+    "is_permission": false,
+    "permission_hours": "0.00",
+    "is_approved_leave": false,
+    "leave_type": "",
+    "leave_reason": "",
+    "updated_by": null,
+    "update_source": "Employee Punch",
+    "in_photo": "",
+    "out_photo": "",
+    "in_latitude": null,
+    "in_longitude": null,
+    "out_latitude": null,
+    "out_longitude": null,
+    "in_location": "",
+    "out_location": "",
+    "created_at": "2026-10-12T07:31:26.374Z",
+    "updated_at": "2026-10-12T07:31:26.374Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 6,
+  "fields": {
+    "employee": 3,
+    "date": "2026-06-18",
+    "in_time": "09:30:00",
+    "out_time": "18:15:00",
+    "status": "Present",
+    "is_permission": false,
+    "permission_hours": "0.00",
+    "is_approved_leave": false,
+    "leave_type": "",
+    "leave_reason": "",
+    "updated_by": null,
+    "update_source": "Punch Machine CSV",
+    "in_photo": "",
+    "out_photo": "",
+    "in_latitude": null,
+    "in_longitude": null,
+    "out_latitude": null,
+    "out_longitude": null,
+    "in_location": "",
+    "out_location": "",
+    "created_at": "2026-10-12T07:31:26.376Z",
+    "updated_at": "2026-10-12T07:31:26.376Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 7,
+  "fields": {
+    "employee": 2,
+    "date": "2026-06-18",
+    "in_time": "09:45:00",
+    "out_time": "18:30:00",
+    "status": "Present",
+    "is_permission": false,
+    "permission_hours": "0.00",
+    "is_approved_leave": false,
+    "leave_type": "",
+    "leave_reason": "",
+    "updated_by": null,
+    "update_source": "Punch Machine CSV",
+    "in_photo": "",
+    "out_photo": "",
+    "in_latitude": null,
+    "in_longitude": null,
+    "out_latitude": null,
+    "out_longitude": null,
+    "in_location": "",
+    "out_location": "",
+    "created_at": "2026-10-12T07:31:26.380Z",
+    "updated_at": "2026-10-12T07:31:26.380Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 8,
+  "fields": {
+    "employee": 1,
+    "date": "2026-10-12",
+    "in_time": null,
+    "out_time": null,
+    "status": "Absent",
+    "is_permission": false,
+    "permission_hours": "0.00",
+    "is_approved_leave": false,
+    "leave_type": "",
+    "leave_reason": "",
+    "updated_by": null,
+    "update_source": "Manual",
+    "in_photo": "",
+    "out_photo": "",
+    "in_latitude": null,
+    "in_longitude": null,
+    "out_latitude": null,
+    "out_longitude": null,
+    "in_location": "",
+    "out_location": "",
+    "created_at": "2026-10-12T07:31:26.381Z",
+    "updated_at": "2026-10-12T07:31:26.382Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 9,
+  "fields": {
+    "employee": 3,
+    "date": "2026-10-13",
+    "in_time": null,
+    "out_time": null,
+    "status": "On Leave",
+    "is_permission": false,
+    "permission_hours": "0.00",
+    "is_approved_leave": true,
+    "leave_type": "Unpaid Leave",
+    "leave_reason": "no",
+    "updated_by": [
+      "hr"
+    ],
+    "update_source": "HR Review (Unpaid Leave)",
+    "in_photo": "",
+    "out_photo": "",
+    "in_latitude": null,
+    "in_longitude": null,
+    "out_latitude": null,
+    "out_longitude": null,
+    "in_location": "",
+    "out_location": "",
+    "created_at": "2026-10-12T10:39:59.563Z",
+    "updated_at": "2026-10-12T10:39:59.566Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 10,
+  "fields": {
+    "employee": 5,
+    "date": "2026-10-12",
+    "in_time": null,
+    "out_time": null,
+    "status": "Present",
+    "is_permission": false,
+    "permission_hours": "0.00",
+    "is_approved_leave": false,
+    "leave_type": "",
+    "leave_reason": "",
+    "updated_by": null,
+    "update_source": "Employee Punch",
+    "in_photo": "",
+    "out_photo": "",
+    "in_latitude": null,
+    "in_longitude": null,
+    "out_latitude": null,
+    "out_longitude": null,
+    "in_location": "",
+    "out_location": "",
+    "created_at": "2026-10-12T11:10:45.115Z",
+    "updated_at": "2026-10-12T11:10:45.115Z"
+  }
+},
+{
+  "model": "attendance.attendance",
+  "pk": 11,
+  "fields": {
+    "employee": 6,
+    "date": "2026-10-12",
+    "in_time": null,
+    "out_time": null,
+    "status": "Present",
+    "is_permission": false,
+    "permission_hours": "0.00",
+    "is_approved_leave": false,
+    "leave_type": "",
+    "leave_reason": "",
+    "updated_by": null,
+    "update_source": "Employee Punch",
+    "in_photo": "",
+    "out_photo": "",
+    "in_latitude": null,
+    "in_longitude": null,
+    "out_latitude": null,
+    "out_longitude": null,
+    "in_location": "",
+    "out_location": "",
+    "created_at": "2026-10-12T11:15:05.531Z",
+    "updated_at": "2026-10-12T11:15:05.531Z"
+  }
+},
+{
+  "model": "attendance.dailywork",
+  "pk": 1,
+  "fields": {
+    "employee": 3,
+    "date": "2026-06-19",
+    "project_name": "emp",
+    "work_details": "fuhhdfgfg",
+    "status": "In Progress",
+    "work_image": "",
+    "is_offsite": false,
+    "location_notes": "",
+    "created_at": "2026-10-12T07:31:26.384Z"
+  }
+},
+{
+  "model": "attendance.dailywork",
+  "pk": 2,
+  "fields": {
+    "employee": 3,
+    "date": "2026-10-12",
+    "project_name": "Test Project",
+    "work_details": "Tested views and features",
+    "status": "Completed",
+    "work_image": "",
+    "is_offsite": false,
+    "location_notes": "",
+    "created_at": "2026-10-12T07:31:26.387Z"
+  }
+},
+{
+  "model": "attendance.attendanceauditlog",
+  "pk": 1,
+  "fields": {
+    "attendance": 9,
+    "changed_by": [
+      "hr"
+    ],
+    "action": "LEAVE_APPROVED",
+    "old_values": "Pending",
+    "new_values": "Approved as Unpaid Leave, Paid: False",
+    "timestamp": "2026-10-12T10:39:59.568Z",
+    "ip_address": "127.0.0.1"
+  }
+},
+{
+  "model": "leave_management.leaverequest",
+  "pk": 1,
+  "fields": {
+    "employee": 3,
+    "leave_type": "Casual Leave",
+    "from_date": "2026-06-20",
+    "to_date": "2026-06-20",
+    "total_days": 1,
+    "reason": "no resion",
+    "status": "Rejected",
+    "applied_on": "2026-10-12T07:31:42.857Z",
+    "reviewed_by": null,
+    "rejection_reason": "",
+    "is_paid": true,
+    "approval_type": "Paid Casual Leave"
+  }
+},
+{
+  "model": "leave_management.leaverequest",
+  "pk": 2,
+  "fields": {
+    "employee": 3,
+    "leave_type": "Casual Leave",
+    "from_date": "2026-06-20",
+    "to_date": "2026-06-20",
+    "total_days": 1,
+    "reason": "no",
+    "status": "Approved",
+    "applied_on": "2026-10-12T07:31:42.859Z",
+    "reviewed_by": null,
+    "rejection_reason": "",
+    "is_paid": true,
+    "approval_type": "Paid Casual Leave"
+  }
+},
+{
+  "model": "leave_management.leaverequest",
+  "pk": 3,
+  "fields": {
+    "employee": 3,
+    "leave_type": "Casual Leave",
+    "from_date": "2026-10-15",
+    "to_date": "2026-10-15",
+    "total_days": 1,
+    "reason": "Personal work",
+    "status": "Approved",
+    "applied_on": "2026-10-12T07:31:42.863Z",
+    "reviewed_by": null,
+    "rejection_reason": "",
+    "is_paid": true,
+    "approval_type": "Paid Casual Leave"
+  }
+},
+{
+  "model": "leave_management.leaverequest",
+  "pk": 4,
+  "fields": {
+    "employee": 3,
+    "leave_type": "Unpaid Leave",
+    "from_date": "2026-10-13",
+    "to_date": "2026-10-13",
+    "total_days": 1,
+    "reason": "no",
+    "status": "Approved",
+    "applied_on": "2026-10-12T10:38:49.191Z",
+    "reviewed_by": [
+      "hr"
+    ],
+    "rejection_reason": "",
+    "is_paid": false,
+    "approval_type": "Unpaid Leave"
+  }
+},
+{
+  "model": "leave_management.hrnotification",
+  "pk": 1,
+  "fields": {
+    "recipient_role": "HR",
+    "title": "Leave Request from Mathan M (Reason: no)",
+    "message": "Mathan M (EMP001) submitted leave request for 1 day(s) (2026-10-13 to 2026-10-13) with reason: \"no\". (Casual leave balance: 0 day(s); recorded for HR review).",
+    "leave_request": 4,
+    "is_read": true,
+    "created_at": "2026-10-12T10:38:49.194Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 1,
+  "fields": {
+    "employee": 3,
+    "year": 2026,
+    "month": 6,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.866Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 2,
+  "fields": {
+    "employee": 1,
+    "year": 2026,
+    "month": 6,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.868Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 3,
+  "fields": {
+    "employee": 2,
+    "year": 2026,
+    "month": 6,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.870Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 4,
+  "fields": {
+    "employee": 1,
+    "year": 2026,
+    "month": 10,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.871Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 5,
+  "fields": {
+    "employee": 2,
+    "year": 2026,
+    "month": 10,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.874Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 6,
+  "fields": {
+    "employee": 3,
+    "year": 2026,
+    "month": 10,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T07:31:42.876Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 7,
+  "fields": {
+    "employee": 4,
+    "year": 2026,
+    "month": 10,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T10:49:20.449Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 8,
+  "fields": {
+    "employee": 5,
+    "year": 2026,
+    "month": 10,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T11:10:45.099Z"
+  }
+},
+{
+  "model": "leave_management.monthlyleavecredit",
+  "pk": 9,
+  "fields": {
+    "employee": 6,
+    "year": 2026,
+    "month": 10,
+    "casual_added": 1,
+    "credited_on": "2026-10-12T11:15:05.518Z"
+  }
+},
+{
+  "model": "payroll.salarystructure",
+  "pk": 1,
+  "fields": {
+    "employee": 1,
+    "basic_salary": "60000.00",
+    "hra": "8000.00",
+    "allowances": "4000.00",
+    "pf_deduction": "1800.00",
+    "tax_deduction": "1200.00",
+    "updated_at": "2026-10-12T07:31:26.333Z"
+  }
+},
+{
+  "model": "payroll.salarystructure",
+  "pk": 2,
+  "fields": {
+    "employee": 2,
+    "basic_salary": "60000.00",
+    "hra": "8000.00",
+    "allowances": "4000.00",
+    "pf_deduction": "1800.00",
+    "tax_deduction": "1200.00",
+    "updated_at": "2026-10-12T07:31:26.341Z"
+  }
+},
+{
+  "model": "payroll.salarystructure",
+  "pk": 3,
+  "fields": {
+    "employee": 3,
+    "basic_salary": "35000.00",
+    "hra": "8000.00",
+    "allowances": "4000.00",
+    "pf_deduction": "1800.00",
+    "tax_deduction": "1200.00",
+    "updated_at": "2026-10-12T07:31:26.348Z"
+  }
+},
+{
+  "model": "payroll.salarystructure",
+  "pk": 4,
+  "fields": {
+    "employee": 4,
+    "basic_salary": "35000.00",
+    "hra": "8000.00",
+    "allowances": "4000.00",
+    "pf_deduction": "1800.00",
+    "tax_deduction": "1200.00",
+    "updated_at": "2026-10-12T07:31:26.358Z"
+  }
+},
+{
+  "model": "payroll.payrollrecord",
+  "pk": 1,
+  "fields": {
+    "employee": 4,
+    "year": 2026,
+    "month": 10,
+    "basic_salary": "35000.00",
+    "allowances": "12000.00",
+    "deductions": "3000.00",
+    "net_salary": "44000.00",
+    "status": "Pending",
+    "payment_date": null,
+    "remarks": "",
+    "created_at": "2026-10-12T07:31:42.881Z"
+  }
+},
+{
+  "model": "payroll.payrollrecord",
+  "pk": 2,
+  "fields": {
+    "employee": 1,
+    "year": 2026,
+    "month": 10,
+    "basic_salary": "60000.00",
+    "allowances": "12000.00",
+    "deductions": "3000.00",
+    "net_salary": "69000.00",
+    "status": "Paid",
+    "payment_date": "2026-10-12",
+    "remarks": "",
+    "created_at": "2026-10-12T07:31:42.886Z"
+  }
+},
+{
+  "model": "payroll.payrollrecord",
+  "pk": 3,
+  "fields": {
+    "employee": 3,
+    "year": 2026,
+    "month": 10,
+    "basic_salary": "35000.00",
+    "allowances": "12000.00",
+    "deductions": "3000.00",
+    "net_salary": "44000.00",
+    "status": "Pending",
+    "payment_date": null,
+    "remarks": "",
+    "created_at": "2026-10-12T07:31:42.889Z"
+  }
+},
+{
+  "model": "payroll.payrollrecord",
+  "pk": 4,
+  "fields": {
+    "employee": 2,
+    "year": 2026,
+    "month": 10,
+    "basic_salary": "60000.00",
+    "allowances": "12000.00",
+    "deductions": "3000.00",
+    "net_salary": "69000.00",
+    "status": "Pending",
+    "payment_date": null,
+    "remarks": "",
+    "created_at": "2026-10-12T07:31:42.892Z"
+  }
+},
+{
+  "model": "dashboard.dashboardbanner",
+  "pk": 1,
+  "fields": {
+    "title": "Netcom HR Announcement",
+    "image": "dashboard_banners/சனன_எறமபன_பரய_உதவ.png",
+    "uploaded_by": [
+      "hr"
+    ],
+    "is_active": false,
+    "created_at": "2026-10-12T10:06:15.954Z",
+    "updated_at": "2026-10-12T10:06:15.954Z"
+  }
+},
+{
+  "model": "dashboard.dashboardbanner",
+  "pk": 2,
+  "fields": {
+    "title": "Netcom HR Announcement",
+    "image": "dashboard_banners/netcom_logo_1.png",
+    "uploaded_by": [
+      "hr"
+    ],
+    "is_active": true,
+    "created_at": "2026-10-12T10:30:21.646Z",
+    "updated_at": "2026-10-12T10:30:21.646Z"
+  }
+}
+]
